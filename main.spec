@@ -2,15 +2,15 @@
 
 
 a = Analysis(
-    ['main.py',
-    'core/config.py',
-    'core/custom_notebook.py',
-    'core/editor.py',
-    'core/line_number_bar.py',
-    'core/main_menu.py'],
+    ['RNoTe/main.py',
+    'RNoTe/core/config.py',
+    'RNoTe/core/custom_notebook.py',
+    'RNoTe/core/editor.py',
+    'RNoTe/core/line_number_bar.py',
+    'RNoTe/core/main_menu.py'],
     pathex=[],
     binaries=[],
-    datas=[('data/close.png', 'data'),('data/icon.png','data')],
+    datas=[('RNoTe/data/close.png', 'data'),('RNoTe/data/icon.png','data')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
