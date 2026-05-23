@@ -212,7 +212,7 @@ class TextTab(tk.Frame):
 
         # Tab config
         self.path = ''
-        self.label = ''  # A variable displayed on tab, only used in "save_as".
+        self.label = ''  # A variable displayed on tab
 
         self.grid_columnconfigure(1, weight = 1)
         self.grid_rowconfigure(0, weight = 1)
@@ -260,6 +260,7 @@ class TextTab(tk.Frame):
         self.text.bind('<B2-Motion>', self._selecting_scrolling)
 
         self.line_number_bar.bind('<Button-1>', self._no_clicking_line_number_bar)
+        self.line_number_bar.bind('<B2-Motion>', self._no_clicking_line_number_bar)
 
         self.text.bind('<MouseWheel>', self.line_number_bar.wheel)
         self.line_number_bar.bind('<MouseWheel>', self.line_number_bar.wheel)
