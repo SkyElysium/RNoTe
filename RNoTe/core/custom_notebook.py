@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from audioop import minmax
 from typing import Optional, Tuple
 
 import tkinter as tk

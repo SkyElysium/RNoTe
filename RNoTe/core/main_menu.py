@@ -199,12 +199,14 @@ class MainMenu(tk.Menu):
             tab = self.main_notebook.nametowidget(tab_id)
             now_tab_id, _ = self.main_notebook.get_tab()
 
-            tab_name = f'● {tab.label}' if tab_id == now_tab_id else tab.label
+            tab_name = tab.label
 
             self.tab_list.add_command(
                 label = tab_name,
                 command = lambda tab_id = tab_id: self.main_notebook.select(tab_id)
             )
+
+            if tab_id == now_tab_id: self.tab_list.entryconfig(tab_name, state = 'disabled')
 
     def _change_font_size(self, *args) -> None:
 
@@ -230,7 +232,6 @@ class MainMenu(tk.Menu):
 
         dialog = tk.Toplevel()
         dialog.title('关于RNoTe')
-        dialog.iconphoto(True, tk.PhotoImage(file = 'data/icon.png'))
 
         x, y = self.master.winfo_x(), self.master.winfo_y()
         dialog.geometry('350x120')
