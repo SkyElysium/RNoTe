@@ -216,7 +216,7 @@ class TextTab(tk.Frame):
         self.grid_columnconfigure(1, weight = 1)
         self.grid_rowconfigure(0, weight = 1)
 
-        # Wigets
+        # Widgets
         font_size = self.notebook.main_window.main_menu.font_size.get()
 
         self.text = tk.Text(
@@ -275,11 +275,11 @@ class TextTab(tk.Frame):
 
         self.menu = tk.Menu(self, tearoff = False, activeforeground = 'black', activebackground = '#91c9f7')
 
-        self.menu.add_command(label = '复制', accelerator = 'Ctrl+C', command = self.copy)
-        self.menu.add_command(label = '剪切', accelerator = 'Ctrl+X', command = self.cut)
-        self.menu.add_command(label = '粘贴', accelerator = 'Ctrl+V', command = self.paste)
+        self.menu.add_command(label = COPY, accelerator = 'Ctrl+C', command = self.copy)
+        self.menu.add_command(label = CUT, accelerator = 'Ctrl+X', command = self.cut)
+        self.menu.add_command(label = PASTE, accelerator = 'Ctrl+V', command = self.paste)
         self.menu.add_separator()
-        self.menu.add_command(label = '复制当前文件路径', command = self.copy_file_path)
+        self.menu.add_command(label = COPY_PRESENT_PATH, command = self.copy_file_path)
 
     def _popup_menu(self, event: tk.Event) -> None:
 
@@ -295,15 +295,15 @@ class TextTab(tk.Frame):
     def _check_status_of_options(self) -> None:
 
         if self.path:
-            self.menu.entryconfig('复制当前文件路径', state = 'normal')
+            self.menu.entryconfig(COPY_PRESENT_PATH, state = 'normal')
         else:
-            self.menu.entryconfig('复制当前文件路径', state = 'disabled')
+            self.menu.entryconfig(COPY_PRESENT_PATH, state = 'disabled')
 
         try:
             self.notebook.main_window.clipboard_get()
-            self.menu.entryconfig('粘贴', state = 'normal')
+            self.menu.entryconfig(PASTE, state = 'normal')
         except tk.TclError:
-            self.menu.entryconfig('粘贴', state = 'disabled')
+            self.menu.entryconfig(PASTE, state = 'disabled')
 
     def _delay_to_update_line_number(self, event: Optional[tk.Event] = None) -> None:
 

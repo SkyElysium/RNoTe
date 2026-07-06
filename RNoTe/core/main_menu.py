@@ -22,9 +22,9 @@ class MainMenu(tk.Menu):
         self['postcommand'] = self._change_status_of_options
 
         # Options that need checking the status in "_change_status_of_options"
-        self.file_option_checklist = ['关闭', '保存', '另存为...', '标签']
-        self.edit_option_checklist = ['撤销', '重做', '复制', '剪切', '粘贴', '全选']
-        self.view_option_checklist = ['放大', '缩小', '恢复默认大小']
+        self.file_option_checklist = [CLOSE, SAVE, SAVE_AS, TAB]
+        self.edit_option_checklist = [UNDO, REDO, COPY, CUT, PASTE, SELECT_ALL]
+        self.view_option_checklist = [ZOOM_IN, ZOOM_OUT, ORIGINAL_SIZE]
 
         # File
         self.file_option = tk.Menu(
@@ -35,23 +35,23 @@ class MainMenu(tk.Menu):
         )
 
         self.file_option.add_command(
-            label = '新建',
+            label = NEW,
             accelerator = 'Ctrl+N',
             command = self.main_notebook.add_tab
         )
         self.file_option.add_separator()
         self.file_option.add_command(
-            label = '打开',
+            label = OPEN,
             accelerator = 'Ctrl+O',
             command = self.main_notebook.open_file
         )
         self.file_option.add_command(
-            label = '保存',
+            label = SAVE,
             accelerator = 'Ctrl+S',
             command = self.main_notebook.save_file
         )
         self.file_option.add_command(
-            label = '另存为...',
+            label = SAVE_AS,
             accelerator = 'Ctrl+Alt+S',
             command = self.main_notebook.save_file_as
         )
@@ -66,21 +66,21 @@ class MainMenu(tk.Menu):
             postcommand = self._get_tab_list
         )
 
-        self.file_option.add_cascade(label = '标签', menu = self.tab_list)
+        self.file_option.add_cascade(label = TAB, menu = self.tab_list)
 
         self.file_option.add_command(
-            label = '关闭',
+            label = CLOSE,
             accelerator = 'Ctrl+F4',
             command = self.main_notebook.safely_close_file
         )
         self.file_option.add_separator()
         self.file_option.add_command(
-            label = '退出',
+            label = EXIT,
             accelerator = 'Alt+F4',
             command = self.master.exiting
         )
 
-        self.add_cascade(label = '文件', menu = self.file_option)
+        self.add_cascade(label = FILE, menu = self.file_option)
 
         # Edit
         self.edit_option = tk.Menu(
@@ -91,39 +91,39 @@ class MainMenu(tk.Menu):
         )
 
         self.edit_option.add_command(
-            label = '撤销',
+            label = UNDO,
             accelerator = 'Ctrl+Z',
             command = lambda : self.main_notebook.get_tab()[1].undo()
         )
         self.edit_option.add_command(
-            label = '重做',
+            label = REDO,
             accelerator = 'Ctrl+Y',
             command = lambda : self.main_notebook.get_tab()[1].redo()
         )
         self.edit_option.add_separator()
         self.edit_option.add_command(
-            label = '复制',
+            label = COPY,
             accelerator = 'Ctrl+C',
             command = lambda : self.main_notebook.get_tab()[1].copy()
         )
         self.edit_option.add_command(
-            label = '剪切',
+            label = CUT,
             accelerator = 'Ctrl+X',
             command = lambda : self.main_notebook.get_tab()[1].cut()
         )
         self.edit_option.add_command(
-            label = '粘贴',
+            label = PASTE,
             accelerator = 'Ctrl+V',
             command = lambda : self.main_notebook.get_tab()[1].paste()
         )
         self.edit_option.add_separator()
         self.edit_option.add_command(
-            label = '全选',
+            label = SELECT_ALL,
             accelerator = 'Ctrl+A',
             command = lambda : self.main_notebook.get_tab()[1].select_all()
         )
 
-        self.add_cascade(label = '编辑', menu = self.edit_option)
+        self.add_cascade(label = EDIT, menu = self.edit_option)
 
         # View
         self.view_option = tk.Menu(
@@ -134,21 +134,21 @@ class MainMenu(tk.Menu):
         )
 
         self.view_option.add_command(
-            label = '放大',
+            label = ZOOM_IN,
             accelerator = 'Ctrl++',
             command = self.zoom_in_font
         )
         self.view_option.add_command(
-            label = '缩小',
+            label = ZOOM_OUT,
             accelerator = 'Ctrl+-',
             command = self.zoom_out_font
         )
         self.view_option.add_command(
-            label = '恢复默认大小',
+            label = ORIGINAL_SIZE,
             command = lambda : self.font_size.set(13)
         )
 
-        self.add_cascade(label = '视图', menu = self.view_option)
+        self.add_cascade(label = VIEW, menu = self.view_option)
 
         # About
         self.about_option = tk.Menu(
@@ -159,15 +159,15 @@ class MainMenu(tk.Menu):
         )
 
         self.about_option.add_command(
-            label = '关于',
+            label = ABOUT,
             command = self._popup_about_dialog
         )
         self.about_option.add_command(
-            label = '报告问题',
+            label = REPORT,
             command = self._link_to_issue
         )
 
-        self.add_cascade(label = '关于', menu = self.about_option)
+        self.add_cascade(label = ABOUT, menu = self.about_option)
 
     def _change_status_of_options(self) -> None:
 
@@ -183,9 +183,9 @@ class MainMenu(tk.Menu):
         try:
             self.master.clipboard_get()
             if self.main_notebook.tabs():
-                self.edit_option.entryconfig('粘贴', state = 'normal')
+                self.edit_option.entryconfig(PASTE, state = 'normal')
         except tk.TclError:
-            self.edit_option.entryconfig('粘贴', state = 'disabled')
+            self.edit_option.entryconfig(PASTE, state = 'disabled')
 
     def _get_tab_list(self) -> None:
 
@@ -231,7 +231,7 @@ class MainMenu(tk.Menu):
     def _popup_about_dialog(self) -> None:
 
         dialog = tk.Toplevel()
-        dialog.title('关于RNoTe')
+        dialog.title(TITLE)
 
         x, y = self.master.winfo_x(), self.master.winfo_y()
         dialog.geometry('350x120')
