@@ -39,35 +39,42 @@ Copyright (c) 2025 SkyElysium.
 ISSUE_URL = 'https://github.com/SkyElysium/RNoTe/issues/new'
 
 # Used at custom_notebook.py for the "layout" function.
-CUSTOM_NOTEBOOK_STYLE = [('CustomNotebook.tab',
-{
-    'sticky': 'nswe',
-    'children': [
-        ('CustomNotebook.padding',
+CUSTOM_NOTEBOOK_STYLE = [
+    (
+        "CustomNotebook.tab",
         {
-            'side': 'top',
-            'sticky': 'nswe',
-            'children': [
-                ('CustomNotebook.focus',
-                {
-                    'side': 'top',
-                    'sticky': 'nswe',
-                    'children': [
-                        ('CustomNotebook.label',
-                        {
-                            'side': 'left',
-                            'sticky': ''
-                        }), ('CustomNotebook.close',
-                        {
-                            'side': 'right',
-                            'sticky': ''
-                        })
-                    ]
-                })
-            ]
-        })
-    ]
-})]
+            "sticky": "nswe",
+            "children": [
+                (
+                    "CustomNotebook.padding",
+                    {
+                        "side": "top",
+                        "sticky": "nswe",
+                        "children": [
+                            (
+                                "CustomNotebook.focus",
+                                {
+                                    "side": "top",
+                                    "sticky": "nswe",
+                                    "children": [
+                                        (
+                                            "CustomNotebook.label",
+                                            {"side": "left", "sticky": ""},
+                                        ),
+                                        (
+                                            "CustomNotebook.close",
+                                            {"side": "right", "sticky": ""},
+                                        ),
+                                    ],
+                                },
+                            )
+                        ],
+                    },
+                )
+            ],
+        },
+    )
+]
 
 CUSTOM_X_SCROLLBAR_STYLE = [
     (
