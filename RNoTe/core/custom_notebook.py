@@ -211,7 +211,7 @@ class TextTab(tk.Frame):
 
         # Tab config
         self.path = ''
-        self.label = ''  # A variable displayed on tab
+        self.label = ''  # A variable displayed on the tab
 
         self.grid_columnconfigure(1, weight = 1)
         self.grid_rowconfigure(0, weight = 1)
@@ -228,6 +228,9 @@ class TextTab(tk.Frame):
             selectbackground = '#d3e9fc',
             selectforeground = 'black'
         )
+
+        self.text.tag_config('search', background = '#caebcb')
+        self.text.tag_config('search_selected', underline = True)
 
         self.line_number_bar = LineNumberBar(self)
         self.line_number_bar.grid(row = 0, column = 0, rowspan = 2, sticky = 'ns')
