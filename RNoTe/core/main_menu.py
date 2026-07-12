@@ -25,7 +25,7 @@ class MainMenu(tk.Menu):
 
         # Options that need checking the status in "_change_status_of_options"
         self.file_option_checklist = [CLOSE, SAVE, SAVE_AS, TAB]
-        self.edit_option_checklist = [UNDO, REDO, COPY, CUT, PASTE, SELECT_ALL]
+        self.edit_option_checklist = [UNDO, REDO, COPY, CUT, PASTE, SELECT_ALL, FIND]
         self.view_option_checklist = [ZOOM_IN, ZOOM_OUT, ORIGINAL_SIZE]
 
         # File
