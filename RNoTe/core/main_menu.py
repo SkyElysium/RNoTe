@@ -286,7 +286,6 @@ class MainMenu(tk.Menu):
         dialog.bind('<FocusIn>', lambda event: self._entry_changed(find_up_button, find_down_button))
 
     def _search_for_words(self, entry: ttk.Entry, up: ttk.Button, down: ttk.Button,pos_: list) -> None:
-
         _, tab = self.main_notebook.get_tab()
         tab.text.tag_remove('search', '1.0', 'end')
 
@@ -299,7 +298,7 @@ class MainMenu(tk.Menu):
 
         pos_.clear()
 
-        while True:
+        while word:
             pos = tab.text.search(word, start, 'end')
             if not pos: break
 
