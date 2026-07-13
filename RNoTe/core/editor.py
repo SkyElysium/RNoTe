@@ -15,7 +15,7 @@ class Editor(tk.Tk):
         self.title(MAIN_WINDOW_TITLE)
         self.geometry(MAIN_WINDOW_SIZE)
 
-        self.iconphoto(False, tk.PhotoImage(file = 'data/icon.png'))
+        self.iconphoto(True, tk.PhotoImage(file = 'data/icon.png'))
 
         self.custom_notebook = CustomNotebook(self)
         self.custom_notebook.pack(fill = 'both', expand = True)
@@ -31,6 +31,7 @@ class Editor(tk.Tk):
             '<Control-s>'    : self.custom_notebook.save_file,
             '<Control-Alt-s>': self.custom_notebook.save_file_as,
             '<Control-F4>'   : self.custom_notebook.safely_close_file,
+            '<Control-f>'    : self.main_menu._popup_find_dialog,
             '<Control-plus>' : self.main_menu.zoom_in_font,
             '<Control-minus>': self.main_menu.zoom_out_font
         }
