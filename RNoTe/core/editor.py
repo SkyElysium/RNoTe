@@ -31,7 +31,7 @@ class Editor(tk.Tk):
             '<Control-s>'    : self.custom_notebook.save_file,
             '<Control-Alt-s>': self.custom_notebook.save_file_as,
             '<Control-F4>'   : self.custom_notebook.safely_close_file,
-            '<Control-f>'    : self.main_menu._popup_find_dialog,
+            '<Control-f>'    : self.main_menu.popup_find_dialog,
             '<Control-plus>' : self.main_menu.zoom_in_font,
             '<Control-minus>': self.main_menu.zoom_out_font
         }

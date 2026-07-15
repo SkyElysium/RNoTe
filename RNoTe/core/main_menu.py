@@ -19,7 +19,10 @@ class MainMenu(tk.Menu):
         self.font_size = tk.IntVar(self, 13)
         self.font_size.trace('w', self._change_font_size)
 
+        # Config of "find"
+        self.pos_list = []
         self.current = -1
+        self.is_find_alive = False
 
         self['postcommand'] = self._change_status_of_options
 
@@ -128,7 +131,7 @@ class MainMenu(tk.Menu):
         self.edit_option.add_command(
             label = FIND,
             accelerator = 'Ctrl+F',
-            command = self._popup_find_dialog
+            command = self.popup_find_dialog
         )
 
         self.add_cascade(label = EDIT, menu = self.edit_option)
@@ -238,9 +241,12 @@ class MainMenu(tk.Menu):
 
         self.font_size.set(self.font_size.get() - 1)
 
-    def _popup_find_dialog(self, event: tk.Event = None) -> None:
+    def popup_find_dialog(self, event: tk.Event = None) -> None:
 
         if not self.main_notebook.tabs(): return
+
+        if self.is_find_alive: return
+        self.is_find_alive = True
 
         dialog = tk.Toplevel()
         dialog.title(TITLE_FIND)
@@ -255,24 +261,26 @@ class MainMenu(tk.Menu):
         dialog.resizable(False, False)
         dialog.focus()
 
-        dialog.bind('<FocusOut>', self._clean_search_tag)
-        dialog.bind('<Destroy>', self._clean_search_tag)
+        dialog.bind('<FocusOut>', lambda event: self._focus_out_of_find(find_up_button, find_down_button))
+        dialog.bind('<Destroy>', self._exit)
 
         find_entry = ttk.Entry(dialog)
         find_entry.place(x = 20, y = 3)
 
-        pos_list = []
+        self.pos_list.clear()
         self.current = -1
 
-        find_entry.bind('<Return>',
-                        lambda event: self._search_for_words(find_entry, find_up_button, find_down_button, pos_list))
+        find_entry.bind(
+            '<Return>',
+            lambda event: self._search_for_words(find_entry, find_up_button, find_down_button)
+        )
 
         find_up_button = ttk.Button(
             dialog,
             text = '<',
             width = 2,
             takefocus = False,
-            command = lambda : self._search_up(pos_list),
+            command = self._search_up,
             state = 'disabled'
         )
         find_up_button.place(x = 230, y = 1)
@@ -282,14 +290,13 @@ class MainMenu(tk.Menu):
             text = '>',
             width = 2,
             takefocus = False,
-            command = lambda : self._search_down(pos_list),
+            command = self._search_down,
             state = 'disabled'
         )
         find_down_button.place(x = 255, y = 1)
 
-        dialog.bind('<FocusIn>', lambda event: self._entry_changed(find_up_button, find_down_button))
+    def _search_for_words(self, entry: ttk.Entry, up: ttk.Button, down: ttk.Button) -> None:
 
-    def _search_for_words(self, entry: ttk.Entry, up: ttk.Button, down: ttk.Button,pos_: list) -> None:
         _, tab = self.main_notebook.get_tab()
         tab.text.tag_remove('search', '1.0', 'end')
 
@@ -298,61 +305,63 @@ class MainMenu(tk.Menu):
         start = '1.0'
 
         self.current = -1
-        self._clean_search_tag()
+        self.main_notebook.get_tab()[1].text.tag_remove('search', '1.0', 'end')
+        self.main_notebook.get_tab()[1].text.tag_remove('search_selected', '1.0', 'end')
 
-        pos_.clear()
+        self.pos_list.clear()
 
         while word:
             pos = tab.text.search(word, start, 'end')
             if not pos: break
 
-            pos_.append((pos, f'{pos}+{length}c'))
+            self.pos_list.append((pos, f'{pos}+{length}c'))
             tab.text.tag_add('search', pos, f'{pos}+{length}c')
 
             start = pos + '+1c'
 
-        if pos_:
-            up.config(state = 'normal')
-            down.config(state = 'normal')
-        else:
-            up.config(state = 'disabled')
-            down.config(state = 'disabled')
+        state = 'normal' if self.pos_list else 'disabled'
 
-    def _search_up(self, pos_: list) -> None:
+        up.config(state = state)
+        down.config(state = state)
 
-        _, tab = self.main_notebook.get_tab()
+    def _search_up(self) -> None:
 
         if self.current >= 0:
             if self.current != 0: self.current -= 1
 
-            tab.text.see(pos_[self.current][0])
-            tab.line_number_bar.scroll_when_searching()
+            self._dump_to_word()
 
-            tab.text.tag_remove('search_selected', '1.0', 'end')
-            tab.text.tag_add('search_selected', pos_[self.current][0], pos_[self.current][1])
+    def _search_down(self) -> None:
 
-    def _search_down(self, pos_: list) -> None:
+        if len(self.pos_list) - 1 >= self.current:
+            if len(self.pos_list) - 1 != self.current: self.current += 1
+
+            self._dump_to_word()
+
+    def _dump_to_word(self) -> None:
 
         _, tab = self.main_notebook.get_tab()
 
-        if len(pos_) - 1 >= self.current:
-            if len(pos_) - 1 != self.current: self.current += 1
+        tab.text.see(self.pos_list[self.current][0])
+        tab.line_number_bar.scroll_when_searching()
 
-            tab.text.see(pos_[self.current][0])
-            tab.line_number_bar.scroll_when_searching()
+        tab.text.tag_remove('search_selected', '1.0', 'end')
+        tab.text.tag_add('search_selected', self.pos_list[self.current][0], self.pos_list[self.current][1])
 
-            tab.text.tag_remove('search_selected', '1.0', 'end')
-            tab.text.tag_add('search_selected', pos_[self.current][0], pos_[self.current][1])
+    def _focus_out_of_find(self, up: ttk.Button, down: ttk.Button) -> None:
 
-    def _clean_search_tag(self, event: tk.Event = None) -> None:
+        up.config(state = 'disabled')
+        down.config(state = 'disabled')
 
         self.main_notebook.get_tab()[1].text.tag_remove('search', '1.0', 'end')
         self.main_notebook.get_tab()[1].text.tag_remove('search_selected', '1.0', 'end')
 
-    def _entry_changed(self, up: ttk.Button, down: ttk.Button) -> None:
+    def _exit(self, event: tk.Event = None) -> None:
 
-        up.config(state = 'disabled')
-        down.config(state = 'disabled')
+        self.is_find_alive = False
+
+        self.main_notebook.get_tab()[1].text.tag_remove('search', '1.0', 'end')
+        self.main_notebook.get_tab()[1].text.tag_remove('search_selected', '1.0', 'end')
 
     def _popup_about_dialog(self) -> None:
 
