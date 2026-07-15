@@ -64,6 +64,8 @@ class CustomNotebook(ttk.Notebook):
 
     def safely_close_file(self, event: Optional[tk.Event] = None, tab_id: str = '') -> None:
 
+        if not self.tabs(): return
+
         tab = self.tabs()[self.index(tab_id)] if tab_id else self.select()
 
         if self.nametowidget(tab).text.edit_modified():
@@ -160,6 +162,8 @@ class CustomNotebook(ttk.Notebook):
 
     def save_file(self, event: Optional[tk.Event] = None, file_path: str = '') -> Optional[str]:
 
+        if not self.tabs(): return
+
         _, text_tab = self.get_tab()
 
         if file_path:
@@ -177,6 +181,8 @@ class CustomNotebook(ttk.Notebook):
         text_tab.text.edit_modified(False)
 
     def save_file_as(self, event: Optional[tk.Event] = None) -> None:
+
+        if not self.tabs(): return
 
         path = filedialog.asksaveasfilename(
             title = '另存为...',
@@ -345,11 +351,15 @@ class TextTab(tk.Frame):
 
     def copy(self) -> None:
 
+        if not self.notebook.tabs(): return
+
         self.text.event_generate('<<Copy>>')
 
         self._update_ui()
 
     def cut(self) -> None:
+
+        if not self.notebook.tabs(): return
 
         self.text.event_generate('<<Cut>>')
 
@@ -357,11 +367,15 @@ class TextTab(tk.Frame):
 
     def paste(self) -> None:
 
+        if not self.notebook.tabs(): return
+
         self.text.event_generate('<<Paste>>')
 
         self._update_ui()
 
     def select_all(self) -> None:
+
+        if not self.notebook.tabs(): return
 
         self.text.event_generate('<<SelectAll>>')
 
@@ -369,11 +383,15 @@ class TextTab(tk.Frame):
 
     def undo(self) -> None:
 
+        if not self.notebook.tabs(): return
+
         self.text.event_generate('<<Undo>>')
 
         self._update_ui()
 
     def redo(self) -> None:
+
+        if not self.notebook.tabs(): return
 
         self.text.event_generate('<<Redo>>')
 

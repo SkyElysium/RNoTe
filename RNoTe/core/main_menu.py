@@ -226,17 +226,21 @@ class MainMenu(tk.Menu):
 
     def zoom_in_font(self, event: Optional[tk.Event] = None) -> None:
 
+        if not self.main_notebook.tabs(): return
         if self.font_size.get() == 60: return
 
         self.font_size.set(self.font_size.get() + 1)
 
     def zoom_out_font(self, event: Optional[tk.Event] = None) -> None:
 
+        if not self.main_notebook.tabs(): return
         if self.font_size.get() == 1: return
 
         self.font_size.set(self.font_size.get() - 1)
 
-    def _popup_find_dialog(self) -> None:
+    def _popup_find_dialog(self, event: tk.Event = None) -> None:
+
+        if not self.main_notebook.tabs(): return
 
         dialog = tk.Toplevel()
         dialog.title(TITLE_FIND)
