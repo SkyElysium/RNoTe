@@ -6,14 +6,12 @@
 
 使用 Tkinter 编写的一个快捷文本编辑器项目，适于做笔记和编写文件。
 
-**预览：**
-
 ![screenshot](screenshots/screenshot.png)
 
-**功能：**
+**内容：**
 
 - [x] 多标签
 - [x] 基本编辑功能
-- [x] 缩放 
+- [x] 缩放
 
 > Bilibili：[SkyElysium](https://space.bilibili.com/1994381139?spm_id_from=333.1007.0.0)
