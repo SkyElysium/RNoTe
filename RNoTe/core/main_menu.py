@@ -1,3 +1,4 @@
+from shutil import posix
 from typing import Optional
 
 import tkinter as tk
@@ -23,6 +24,7 @@ class MainMenu(tk.Menu):
         self.pos_list = []
         self.current = -1
         self.is_find_alive = False
+        self.idx = tk.StringVar(self, '0/0')
 
         self['postcommand'] = self._change_status_of_options
 
@@ -275,6 +277,9 @@ class MainMenu(tk.Menu):
             lambda event: self._search_for_words(find_entry, find_up_button, find_down_button)
         )
 
+        index_label = tk.Label(dialog, textvariable = self.idx)
+        index_label.place(x = 185, y = 3)
+
         find_up_button = ttk.Button(
             dialog,
             text = '<',
@@ -324,6 +329,8 @@ class MainMenu(tk.Menu):
         up.config(state = state)
         down.config(state = state)
 
+        self.idx.set(f'0/{len(self.pos_list)}')
+
     def _search_up(self) -> None:
 
         if self.current >= 0:
@@ -348,6 +355,8 @@ class MainMenu(tk.Menu):
         tab.text.tag_remove('search_selected', '1.0', 'end')
         tab.text.tag_add('search_selected', self.pos_list[self.current][0], self.pos_list[self.current][1])
 
+        self.idx.set(f'{self.current + 1}/{len(self.pos_list)}')
+
     def _focus_out_of_find(self, up: ttk.Button, down: ttk.Button) -> None:
 
         up.config(state = 'disabled')
@@ -356,12 +365,16 @@ class MainMenu(tk.Menu):
         self.main_notebook.get_tab()[1].text.tag_remove('search', '1.0', 'end')
         self.main_notebook.get_tab()[1].text.tag_remove('search_selected', '1.0', 'end')
 
+        self.idx.set('0/0')
+
     def _exit(self, event: tk.Event = None) -> None:
 
         self.is_find_alive = False
 
         self.main_notebook.get_tab()[1].text.tag_remove('search', '1.0', 'end')
         self.main_notebook.get_tab()[1].text.tag_remove('search_selected', '1.0', 'end')
+
+        self.idx.set('0/0')
 
     def _popup_about_dialog(self) -> None:
 
