@@ -24,6 +24,7 @@ class MainMenu(tk.Menu):
         self.pos_list = []
         self.current = -1
         self.is_find_alive = False
+        self.is_regexp_on = False
         self.idx = tk.StringVar(self, '0/0')
 
         self['postcommand'] = self._change_status_of_options
@@ -254,7 +255,7 @@ class MainMenu(tk.Menu):
         dialog.title(TITLE_FIND)
 
         x, y = self.master.winfo_x(), self.master.winfo_y()
-        dialog.geometry('300x30')
+        dialog.geometry('330x30')
         dialog.geometry(f'+{x}+{y}')
 
         dialog.attributes('-toolwindow', True)
@@ -266,8 +267,18 @@ class MainMenu(tk.Menu):
         dialog.bind('<FocusOut>', lambda event: self._focus_out_of_find(find_up_button, find_down_button))
         dialog.bind('<Destroy>', self._exit)
 
+        regexp = ttk.Button(
+            dialog,
+            text = '.*',
+            width = 2,
+            takefocus = False,
+            padding = 0.1,
+            command = lambda : self._change_status_of_regexp(regexp),
+        )
+        regexp.place(x = 20, y = 2)
+
         find_entry = ttk.Entry(dialog)
-        find_entry.place(x = 20, y = 3)
+        find_entry.place(x = 50, y = 3)
 
         self.pos_list.clear()
         self.current = -1
@@ -278,7 +289,7 @@ class MainMenu(tk.Menu):
         )
 
         index_label = tk.Label(dialog, textvariable = self.idx)
-        index_label.place(x = 185, y = 3)
+        index_label.place(x = 215, y = 3)
 
         find_up_button = ttk.Button(
             dialog,
@@ -288,7 +299,7 @@ class MainMenu(tk.Menu):
             command = self._search_up,
             state = 'disabled'
         )
-        find_up_button.place(x = 230, y = 1)
+        find_up_button.place(x = 260, y = 1)
 
         find_down_button = ttk.Button(
             dialog,
@@ -298,7 +309,16 @@ class MainMenu(tk.Menu):
             command = self._search_down,
             state = 'disabled'
         )
-        find_down_button.place(x = 255, y = 1)
+        find_down_button.place(x = 285, y = 1)
+
+    def _change_status_of_regexp(self, regexp_button: ttk.Button) -> None:
+
+        if not self.is_regexp_on:
+            self.is_regexp_on = True
+            regexp_button.config(text = '.-')
+        else:
+            self.is_regexp_on = False
+            regexp_button.config(text = '.*')
 
     def _search_for_words(self, entry: ttk.Entry, up: ttk.Button, down: ttk.Button) -> None:
 
@@ -306,7 +326,7 @@ class MainMenu(tk.Menu):
         tab.text.tag_remove('search', '1.0', 'end')
 
         word = entry.get()
-        length = len(word)
+        length = tk.StringVar()
         start = '1.0'
 
         self.current = -1
@@ -316,13 +336,16 @@ class MainMenu(tk.Menu):
         self.pos_list.clear()
 
         while word:
-            pos = tab.text.search(word, start, 'end')
+            try:
+                pos = tab.text.search(word, start, 'end', regexp = self.is_regexp_on, count = length)
+            except: pass  # When RegExp grammar is wrong, enter.
+
             if not pos: break
 
-            self.pos_list.append((pos, f'{pos}+{length}c'))
-            tab.text.tag_add('search', pos, f'{pos}+{length}c')
+            self.pos_list.append((pos, f'{pos}+{length.get()}c'))
+            tab.text.tag_add('search', pos, f'{pos}+{length.get()}c')
 
-            start = pos + '+1c'
+            start = f'{pos}+{length.get()}c'
 
         state = 'normal' if self.pos_list else 'disabled'
 
