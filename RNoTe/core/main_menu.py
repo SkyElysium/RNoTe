@@ -269,7 +269,7 @@ class MainMenu(tk.Menu):
 
         regexp = ttk.Button(
             dialog,
-            text = '.*',
+            text = '.*' if not self.is_regexp_on else '.-',
             width = 2,
             takefocus = False,
             padding = 0.1,
