@@ -1,4 +1,3 @@
-from shutil import posix
 from typing import Optional
 
 import tkinter as tk
