@@ -231,13 +231,11 @@ class MainMenu(tk.Menu):
                 command = lambda path = path: self.main_notebook.open_file(file_path = path)
             )
 
-    def add_new_file_record(self, file_path: str) -> None:
-
-        # TODO: suggested to use cache (read once)
+    def record_new_file(self, file_path: str) -> None:
 
         with open('data/config/recent_files.txt', 'a+', encoding = 'utf-8') as f:
             f.seek(0)
-            paths = f.read().splitlines()
+            paths = f.readlines()
 
             if file_path in paths: return
 

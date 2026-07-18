@@ -77,6 +77,9 @@ class CustomNotebook(ttk.Notebook):
                 if self.save_file(file_path = self.nametowidget(tab).path) == 'NotSaved': return
             if reply is None: return
 
+        if self.nametowidget(tab).path:
+            self.main_window.main_menu.record_new_file(self.nametowidget(tab).path)
+
         self.remove_tab(tab_id = tab_id)
 
     def _move_selected_tab(self, event: tk.Event) -> None:
@@ -167,7 +170,6 @@ class CustomNotebook(ttk.Notebook):
         text_tab.text.focus_set()
 
         text_tab.line_number_bar.update_line_number()
-        self.main_window.main_menu.add_new_file_record(path)
 
     def save_file(self, event: Optional[tk.Event] = None, file_path: str = '') -> Optional[str]:
 
