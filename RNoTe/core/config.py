@@ -8,6 +8,7 @@ NEW           = '新建'
 OPEN          = '打开'
 SAVE          = '保存'
 SAVE_AS       = '另存为...'
+OPEN_RECENTLY = '最近打开'
 TAB           = '标签'
 CLOSE         = '关闭'
 EXIT          = '退出'
@@ -18,6 +19,7 @@ COPY          = '复制'
 CUT           = '剪切'
 PASTE         = '粘贴'
 SELECT_ALL    = '全选'
+FIND          = '查找'
 VIEW          = '视图'
 ZOOM_IN       = '放大'
 ZOOM_OUT      = '缩小'
@@ -27,8 +29,11 @@ REPORT        = '报告问题'
 
 COPY_PRESENT_PATH = '复制当前文件路径'
 
+# Used at main_menu.pu for the "find" dialog.
+TITLE_FIND = '查找'
+
 # Used at main_menu.py for the "about" dialog.
-TITLE = '关于RNoTe'
+TITLE_ABOUT = '关于 RNoTe'
 
 FIRST_INFO = '项目开源在：https://github.com/SkyElysium/RNoTe'
 SECOND_INFO = '''\n

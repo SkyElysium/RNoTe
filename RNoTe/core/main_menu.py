@@ -63,6 +63,18 @@ class MainMenu(tk.Menu):
             accelerator = 'Ctrl+Alt+S',
             command = self.main_notebook.save_file_as
         )
+
+        # File List
+        self.file_list = tk.Menu(
+            self.file_option,
+            tearoff = False,
+            activeforeground = 'black',
+            activebackground = '#91c9f7',
+            postcommand = self._get_file_list
+        )
+
+        self.file_option.add_cascade(label = OPEN_RECENTLY, menu = self.file_list)
+
         self.file_option.add_separator()
 
         # Tab List
@@ -200,6 +212,45 @@ class MainMenu(tk.Menu):
                 self.edit_option.entryconfig(PASTE, state = 'normal')
         except tk.TclError:
             self.edit_option.entryconfig(PASTE, state = 'disabled')
+
+    def _get_file_list(self) -> None:
+
+        with open('data/config/recent_files.txt') as f:
+            paths = f.read().splitlines()
+
+            if not paths:
+                self.file_option.entryconfig(OPEN_RECENTLY, state = 'disabled')
+
+                return
+
+        self.file_list.delete('0', 'end')
+
+        for path in reversed(paths):
+            self.file_list.add_command(
+                label = path,
+                command = lambda path = path: self.main_notebook.open_file(file_path = path)
+            )
+
+    def add_new_file_record(self, file_path: str) -> None:
+
+        # TODO: suggested to use cache (read once)
+
+        with open('data/config/recent_files.txt', 'a+', encoding = 'utf-8') as f:
+            f.seek(0)
+            paths = f.read().splitlines()
+
+            if file_path in paths: return
+
+            if len(paths) == 5:
+                paths.pop(0)
+                paths.append(file_path + '\n')
+
+                f.truncate(0)
+
+                f.writelines(paths)
+            else:
+                f.seek(0, 2)
+                f.write(file_path + '\n')
 
     def _get_tab_list(self) -> None:
 

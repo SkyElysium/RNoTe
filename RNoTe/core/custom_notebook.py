@@ -127,17 +127,25 @@ class CustomNotebook(ttk.Notebook):
 
         return tab, text_tab
 
-    def open_file(self, event: Optional[tk.Event] = None) -> None:
+    def open_file(self, event: Optional[tk.Event] = None, file_path: str = '') -> None:
 
         path = filedialog.askopenfilename(
             title = f'打开',
             filetypes = [('文本文档', '*.txt'), ('所有类型', '*.*')]
-        )
+        ) if not file_path else file_path
 
         if not path: return
 
         try:
             file = Path(path)
+
+            if not file.exists():
+                messagebox.showwarning(
+                    title = MAIN_WINDOW_TITLE,
+                    message = '打开的文件路径不存在'
+                )
+                return
+
             text = file.read_text(encoding = 'utf-8')
 
             text_tab = self.add_tab(tab_name = file.name)
@@ -159,6 +167,7 @@ class CustomNotebook(ttk.Notebook):
         text_tab.text.focus_set()
 
         text_tab.line_number_bar.update_line_number()
+        self.main_window.main_menu.add_new_file_record(path)
 
     def save_file(self, event: Optional[tk.Event] = None, file_path: str = '') -> Optional[str]:
 
