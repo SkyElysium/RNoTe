@@ -214,13 +214,14 @@ class MainMenu(tk.Menu):
 
     def _get_file_list(self) -> None:
 
-        with open('data/config/recent_files.txt') as f:
+        with open('data/config/recent_files.txt', 'r', encoding = 'utf-8') as f:
             paths = f.read().splitlines()
 
             if not paths:
                 self.file_option.entryconfig(OPEN_RECENTLY, state = 'disabled')
 
                 return
+            else: self.file_option.entryconfig(OPEN_RECENTLY, state = 'normal')
 
         self.file_list.delete('0', 'end')
 
