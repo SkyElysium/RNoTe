@@ -237,7 +237,7 @@ class MainMenu(tk.Menu):
             f.seek(0)
             paths = f.readlines()
 
-            if file_path in paths: return
+            if file_path + '\n' in paths: return
 
             if len(paths) == 5:
                 paths.pop(0)
