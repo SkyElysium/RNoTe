@@ -231,6 +231,9 @@ class MainMenu(tk.Menu):
                 command = lambda path = path: self.main_notebook.open_file(file_path = path)
             )
 
+        self.file_list.add_separator()
+        self.file_list.add_command(label = CLEAN_RECOARDS, command = self._clean_records)
+
     def record_new_file(self, file_path: str) -> None:
 
         with open('data/config/recent_files.txt', 'a+', encoding = 'utf-8') as f:
@@ -239,7 +242,7 @@ class MainMenu(tk.Menu):
 
             if file_path + '\n' in paths: return
 
-            if len(paths) == 5:
+            if len(paths) == 8:  # The max number of records
                 paths.pop(0)
                 paths.append(file_path + '\n')
 
@@ -249,6 +252,13 @@ class MainMenu(tk.Menu):
             else:
                 f.seek(0, 2)
                 f.write(file_path + '\n')
+
+    def _clean_records(self) -> None:
+
+        with open('data/config/recent_files.txt', 'w', encoding = 'utf-8') as f:
+            f.truncate(0)
+
+        self._get_tab_list()
 
     def _get_tab_list(self) -> None:
 
