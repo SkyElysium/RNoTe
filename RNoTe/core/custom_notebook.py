@@ -335,7 +335,12 @@ class TextTab(tk.Frame):
         # Wait until clicking successfully.
         self.after(1, self.line_number_bar.update_highlight_current_line)
 
-    def _ctrl_o(self, event: tk.Event) -> None: return None  # Tkinter has bound ctrl+o inside "Text".
+    def _ctrl_o(self, event: tk.Event) -> str:
+
+        # Tkinter has bound ctrl+o inside "Text".
+        self.notebook.open_file()
+
+        return 'break'
 
     def _is_out_of_text(self, upper, lower) -> None:
 
