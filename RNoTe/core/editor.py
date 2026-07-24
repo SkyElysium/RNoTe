@@ -49,6 +49,8 @@ class Editor(tk.Tk):
         saving_result = []
 
         for tab_id in self.custom_notebook.tabs():
+            if self.custom_notebook.nametowidget(tab_id).path:
+                self.main_menu.record_new_file(self.custom_notebook.nametowidget(tab_id).path)
             saving_result.append(self.custom_notebook.nametowidget(tab_id).text.edit_modified())
 
         if any(saving_result):
