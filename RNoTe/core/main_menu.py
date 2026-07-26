@@ -232,7 +232,7 @@ class MainMenu(tk.Menu):
             )
 
         self.file_list.add_separator()
-        self.file_list.add_command(label = CLEAN_RECOARDS, command = self._clean_records)
+        self.file_list.add_command(label = CLEAN_RECORDS, command = self._clean_records)
 
     def record_new_file(self, file_path: str) -> None:
 
@@ -381,6 +381,8 @@ class MainMenu(tk.Menu):
 
     def _search_for_words(self, entry: ttk.Entry, up: ttk.Button, down: ttk.Button) -> None:
 
+        if not self.main_notebook.tabs(): return
+
         _, tab = self.main_notebook.get_tab()
         tab.text.tag_remove('search', '1.0', 'end')
 
@@ -452,6 +454,8 @@ class MainMenu(tk.Menu):
     def _exit(self, event: tk.Event = None) -> None:
 
         self.is_find_alive = False
+
+        if not self.main_notebook.tabs(): return
 
         self.main_notebook.get_tab()[1].text.tag_remove('search', '1.0', 'end')
         self.main_notebook.get_tab()[1].text.tag_remove('search_selected', '1.0', 'end')
