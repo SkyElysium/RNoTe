@@ -1,17 +1,30 @@
 # RNoTe
 
 ![Static Badge](https://img.shields.io/badge/Python-3.8.9-blue?logo=python&logoColor=white)
-![Static Badge](https://img.shields.io/badge/许可证-MIT_License-green?style=flat)
 ![Static Badge](https://img.shields.io/badge/Realeses-v0.0.1-coral?style=flat)
 
-使用 Tkinter 编写的一个快捷文本编辑器项目，适于做笔记和编写文件。
+&emsp;&emsp;本项目是使用 Tkinter 开发的一个轻量快捷的文本编辑器，软件界面设计整洁，  
+适合沉浸式编辑文本和写笔记。
+
+## 预览
 
 ![screenshot](screenshots/screenshot.png)
 
-**内容：**
+## 使用
 
-- [x] 多标签
-- [x] 基本编辑功能
-- [x] 缩放
+&emsp;&emsp;在项目的 Realeases 中下载稳定软件版本，  
+自打包按以下步骤（Pyinstaller为例）：
+
+&emsp;&emsp;在项目根目录执行打包命令：
+
+```
+pyinstaller main.spec
+```
+
+&emsp;&emsp;从```dist/main/_internal```目录下将```data```转移到```main```下
+
+> ```_internal```只存在 Pyinstaller 6.0.0+
+
+&emsp;&emsp;欢迎为此项目做出贡献，
 
 > Bilibili：[SkyElysium](https://space.bilibili.com/1994381139?spm_id_from=333.1007.0.0)
