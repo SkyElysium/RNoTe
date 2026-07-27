@@ -15,13 +15,13 @@
 &emsp;&emsp;在项目的 Realeases 中下载稳定软件版本，  
 自打包按以下步骤（Pyinstaller为例）：
 
-&emsp;&emsp;在项目根目录执行打包命令：
+&emsp;&emsp;1.在项目根目录执行打包命令：
 
 ```
 pyinstaller main.spec
 ```
 
-&emsp;&emsp;从```dist/main/_internal```目录下将```data```转移到```main```下
+&emsp;&emsp;2.从```dist/main/_internal```目录下将```data```转移到```main```下
 
 > ```_internal```只存在 Pyinstaller 6.0.0+
 
