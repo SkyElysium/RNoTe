@@ -311,13 +311,13 @@ class MainMenu(tk.Menu):
         self.is_find_alive = True
 
         dialog = tk.Toplevel()
+        dialog.transient(self.master)
         dialog.title(TITLE_FIND)
 
         x, y = self.master.winfo_x(), self.master.winfo_y()
         dialog.geometry('330x30')
         dialog.geometry(f'+{x}+{y}')
 
-        dialog.attributes('-toolwindow', True)
         dialog.attributes('-topmost', True)
 
         dialog.resizable(False, False)
@@ -465,6 +465,7 @@ class MainMenu(tk.Menu):
     def _popup_about_dialog(self) -> None:
 
         dialog = tk.Toplevel()
+        dialog.transient(self.master)
         dialog.title(TITLE_ABOUT)
 
         x, y = self.master.winfo_x(), self.master.winfo_y()
