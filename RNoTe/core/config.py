@@ -36,9 +36,10 @@ TITLE_FIND = '查找'
 # Used at main_menu.py for the "about" dialog.
 TITLE_ABOUT = '关于 RNoTe'
 
-FIRST_INFO = '项目开源在：https://github.com/SkyElysium/RNoTe'
-SECOND_INFO = '''\n
-Licensed Under the MIT License.
+FIRST_INFO = 'https://github.com/SkyElysium/RNoTe'
+SECOND_INFO = '''
+
+MIT License
 Copyright (c) 2025 SkyElysium.
 '''
 

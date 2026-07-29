@@ -371,15 +371,13 @@ class TextTab(tk.Frame):
 
         self.text.event_generate('<<Copy>>')
 
-        self._update_ui()
-
     def cut(self) -> None:
 
         if not self.notebook.tabs(): return
 
         self.text.event_generate('<<Cut>>')
 
-        self._update_ui()
+        self.line_number_bar.update_line_number()
 
     def paste(self) -> None:
 
@@ -387,7 +385,7 @@ class TextTab(tk.Frame):
 
         self.text.event_generate('<<Paste>>')
 
-        self._update_ui()
+        self.line_number_bar.update_line_number()
 
     def select_all(self) -> None:
 
@@ -395,25 +393,19 @@ class TextTab(tk.Frame):
 
         self.text.event_generate('<<SelectAll>>')
 
-        self._update_ui()
-
     def undo(self) -> None:
 
         if not self.notebook.tabs(): return
 
         self.text.event_generate('<<Undo>>')
 
-        self._update_ui()
+        self.line_number_bar.update_line_number()
 
     def redo(self) -> None:
 
         if not self.notebook.tabs(): return
 
         self.text.event_generate('<<Redo>>')
-
-        self._update_ui()
-
-    def _update_ui(self) -> None:
 
         self.line_number_bar.update_line_number()
 

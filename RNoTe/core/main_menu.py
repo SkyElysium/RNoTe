@@ -258,8 +258,6 @@ class MainMenu(tk.Menu):
         with open('data/config/recent_files.txt', 'w', encoding = 'utf-8') as f:
             f.truncate(0)
 
-        self._get_tab_list()
-
     def _get_tab_list(self) -> None:
 
         if not self.main_notebook.tabs(): return
@@ -279,7 +277,7 @@ class MainMenu(tk.Menu):
                 command = lambda tab_id = tab_id: self.main_notebook.select(tab_id)
             )
 
-            if tab_id == now_tab_id: self.tab_list.entryconfig(tab_name, state = 'disabled')
+            if tab_id == now_tab_id: self.tab_list.entryconfig(list_.index(tab_id), state = 'disabled')
 
     def _change_font_size(self, *args) -> None:
 
@@ -479,8 +477,7 @@ class MainMenu(tk.Menu):
         dialog.focus()
 
         tk.Label(dialog, text = MAIN_WINDOW_TITLE, font = ('Consolas', 15)).pack()
-        ttk.Separator(dialog).pack(fill = 'x')
-        tk.Message(dialog, text = FIRST_INFO, width = 600).pack()
+        tk.Message(dialog, text = FIRST_INFO, width = 600, fg = 'blue').pack()
         tk.Message(dialog, text = SECOND_INFO, width = 600, justify = 'center').pack(side = 'bottom')
 
     def _link_to_issue(self) -> None:
