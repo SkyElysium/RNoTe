@@ -1,11 +1,10 @@
 from __future__ import annotations
-
 from typing import Optional, Tuple
 
 import tkinter as tk
 import tkinter.ttk as ttk
-
 from tkinter import filedialog, messagebox
+
 from pathlib import Path
 
 from core.config import *
@@ -64,7 +63,8 @@ class CustomNotebook(ttk.Notebook):
 
     def safely_close_file(self, event: Optional[tk.Event] = None, tab_id: str = '') -> None:
 
-        if not self.tabs(): return
+        if not self.tabs():
+            return
 
         tab = self.tabs()[self.index(tab_id)] if tab_id else self.select()
 
@@ -73,9 +73,10 @@ class CustomNotebook(ttk.Notebook):
                 title = MAIN_WINDOW_TITLE,
                 message = '是否在关闭之前保存文件？'
             )
-            if reply:
-                if self.save_file(file_path = self.nametowidget(tab).path) == 'NotSaved': return
-            if reply is None: return
+            if reply and self.save_file(file_path = self.nametowidget(tab).path) == 'NotSaved':
+                return
+            elif reply is None:
+                return
 
         if self.nametowidget(tab).path:
             self.main_window.main_menu.record_new_file(self.nametowidget(tab).path)
@@ -89,13 +90,15 @@ class CustomNotebook(ttk.Notebook):
             tab_index = self.index(f'@{event.x}, {event.y}')
 
             self.insert(tab_index, self.select())
-        except tk.TclError: pass
+        except tk.TclError:
+            pass
 
     def _update_info_on_title(self, event: Optional[tk.Event] = None) -> None:
 
         self.main_window.title(MAIN_WINDOW_TITLE)
 
-        if not self.tabs(): return
+        if not self.tabs():
+            return
 
         _, text_tab = self.get_tab()
 
@@ -137,7 +140,8 @@ class CustomNotebook(ttk.Notebook):
             filetypes = [('文本文档', '*.txt'), ('所有类型', '*.*')]
         ) if not file_path else file_path
 
-        if not path: return
+        if not path:
+            return
 
         try:
             file = Path(path)
@@ -173,7 +177,8 @@ class CustomNotebook(ttk.Notebook):
 
     def save_file(self, event: Optional[tk.Event] = None, file_path: str = '') -> Optional[str]:
 
-        if not self.tabs(): return
+        if not self.tabs():
+            return
 
         _, text_tab = self.get_tab()
 
@@ -193,7 +198,8 @@ class CustomNotebook(ttk.Notebook):
 
     def save_file_as(self, event: Optional[tk.Event] = None) -> None:
 
-        if not self.tabs(): return
+        if not self.tabs():
+            return
 
         path = filedialog.asksaveasfilename(
             title = '另存为...',
@@ -201,11 +207,12 @@ class CustomNotebook(ttk.Notebook):
             filetypes = [('文本文档', '*.txt'), ('所有类型', '*.*')]
         )
 
-        if not path: return
+        if not path:
+            return
 
         tab, text_tab = self.get_tab()
 
-        if text_tab.path:  # When the file has been, enter this fork.
+        if text_tab.path:  # When the file has been, enter.
             self.save_file(file_path = path)
 
             return
@@ -299,7 +306,7 @@ class TextTab(tk.Frame):
         self.menu.add_command(label = CUT, accelerator = 'Ctrl+X', command = self.cut)
         self.menu.add_command(label = PASTE, accelerator = 'Ctrl+V', command = self.paste)
         self.menu.add_separator()
-        self.menu.add_command(label = COPY_PRESENT_PATH, command = self.copy_file_path)
+        self.menu.add_command(label = COPY_PRESENT_PATH, command = self._copy_file_path)
 
     def _popup_menu(self, event: tk.Event) -> None:
 
@@ -367,13 +374,15 @@ class TextTab(tk.Frame):
 
     def copy(self) -> None:
 
-        if not self.notebook.tabs(): return
+        if not self.notebook.tabs():
+            return
 
         self.text.event_generate('<<Copy>>')
 
     def cut(self) -> None:
 
-        if not self.notebook.tabs(): return
+        if not self.notebook.tabs():
+            return
 
         self.text.event_generate('<<Cut>>')
 
@@ -381,7 +390,8 @@ class TextTab(tk.Frame):
 
     def paste(self) -> None:
 
-        if not self.notebook.tabs(): return
+        if not self.notebook.tabs():
+            return
 
         self.text.event_generate('<<Paste>>')
 
@@ -389,13 +399,15 @@ class TextTab(tk.Frame):
 
     def select_all(self) -> None:
 
-        if not self.notebook.tabs(): return
+        if not self.notebook.tabs():
+            return
 
         self.text.event_generate('<<SelectAll>>')
 
     def undo(self) -> None:
 
-        if not self.notebook.tabs(): return
+        if not self.notebook.tabs():
+            return
 
         self.text.event_generate('<<Undo>>')
 
@@ -403,13 +415,14 @@ class TextTab(tk.Frame):
 
     def redo(self) -> None:
 
-        if not self.notebook.tabs(): return
+        if not self.notebook.tabs():
+            return
 
         self.text.event_generate('<<Redo>>')
 
         self.line_number_bar.update_line_number()
 
-    def copy_file_path(self) -> None:
+    def _copy_file_path(self) -> None:
 
         self.notebook.main_window.clipboard_clear()
         self.notebook.main_window.clipboard_append(self.path)

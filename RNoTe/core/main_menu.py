@@ -22,9 +22,10 @@ class MainMenu(tk.Menu):
         # Config of "find"
         self.pos_list = []
         self.current = -1
+        self.idx = tk.StringVar(self, '0/0')
+
         self.is_find_alive = False
         self.is_regexp_on = False
-        self.idx = tk.StringVar(self, '0/0')
 
         self['postcommand'] = self._change_status_of_options
 
@@ -188,7 +189,7 @@ class MainMenu(tk.Menu):
             command = self._popup_about_dialog
         )
         self.about_option.add_command(
-            label = REPORT,
+            label = FEEDBACK,
             command = self._link_to_issue
         )
 
@@ -198,12 +199,9 @@ class MainMenu(tk.Menu):
 
         status = 'disabled' if not self.main_notebook.tabs() else 'normal'
 
-        for each in self.file_option_checklist:
-            self.file_option.entryconfig(each, state = status)
-        for each in self.edit_option_checklist:
-            self.edit_option.entryconfig(each, state = status)
-        for each in self.view_option_checklist:
-            self.view_option.entryconfig(each, state = status)
+        for option in ['file', 'edit', 'view']:
+            for each in eval(f'self.{option}_option_checklist'):
+                eval(f'self.{option}_option.entryconfig("{each}", state = "{status}")')
 
         try:
             self.master.clipboard_get()
@@ -211,6 +209,9 @@ class MainMenu(tk.Menu):
                 self.edit_option.entryconfig(PASTE, state = 'normal')
         except tk.TclError:
             self.edit_option.entryconfig(PASTE, state = 'disabled')
+
+        self.view_option.entryconfig(ORIGINAL_SIZE,
+                                    state = 'disabled' if self.font_size.get() == 13 else 'normal')
 
     def _get_file_list(self) -> None:
 
@@ -240,7 +241,8 @@ class MainMenu(tk.Menu):
             f.seek(0)
             paths = f.readlines()
 
-            if file_path + '\n' in paths: return
+            if file_path + '\n' in paths:
+                return
 
             if len(paths) == 8:  # The max number of records
                 paths.pop(0)
@@ -260,7 +262,8 @@ class MainMenu(tk.Menu):
 
     def _get_tab_list(self) -> None:
 
-        if not self.main_notebook.tabs(): return
+        if not self.main_notebook.tabs():
+            return
 
         self.tab_list.delete('0', 'end')
 
@@ -289,23 +292,25 @@ class MainMenu(tk.Menu):
 
     def zoom_in_font(self, event: Optional[tk.Event] = None) -> None:
 
-        if not self.main_notebook.tabs(): return
-        if self.font_size.get() == 60: return
+        if not self.main_notebook.tabs() or self.font_size.get() == 60:
+            return
 
         self.font_size.set(self.font_size.get() + 1)
 
     def zoom_out_font(self, event: Optional[tk.Event] = None) -> None:
 
-        if not self.main_notebook.tabs(): return
-        if self.font_size.get() == 1: return
+        if not self.main_notebook.tabs() or self.font_size.get() == 1:
+            return
 
         self.font_size.set(self.font_size.get() - 1)
 
     def popup_find_dialog(self, event: tk.Event = None) -> None:
 
-        if not self.main_notebook.tabs(): return
+        if not self.main_notebook.tabs():
+            return
 
-        if self.is_find_alive: return
+        if self.is_find_alive:
+            return
         self.is_find_alive = True
 
         dialog = tk.Toplevel()
@@ -379,7 +384,8 @@ class MainMenu(tk.Menu):
 
     def _search_for_words(self, entry: ttk.Entry, up: ttk.Button, down: ttk.Button) -> None:
 
-        if not self.main_notebook.tabs(): return
+        if not self.main_notebook.tabs():
+            return
 
         _, tab = self.main_notebook.get_tab()
         tab.text.tag_remove('search', '1.0', 'end')
@@ -397,9 +403,11 @@ class MainMenu(tk.Menu):
         while word:
             try:
                 pos = tab.text.search(word, start, 'end', regexp = self.is_regexp_on, count = length)
-            except: pass  # When RegExp grammar is wrong, enter.
+            except:
+                pass  # When RegExp grammar is wrong, enter.
 
-            if not pos: break
+            if not pos:
+                break
 
             self.pos_list.append((pos, f'{pos}+{length.get()}c'))
             tab.text.tag_add('search', pos, f'{pos}+{length.get()}c')
@@ -416,14 +424,16 @@ class MainMenu(tk.Menu):
     def _search_up(self) -> None:
 
         if self.current >= 0:
-            if self.current != 0: self.current -= 1
+            if self.current != 0:
+                self.current -= 1
 
             self._dump_to_word()
 
     def _search_down(self) -> None:
 
         if len(self.pos_list) - 1 >= self.current:
-            if len(self.pos_list) - 1 != self.current: self.current += 1
+            if len(self.pos_list) - 1 != self.current:
+                self.current += 1
 
             self._dump_to_word()
 
@@ -453,7 +463,8 @@ class MainMenu(tk.Menu):
 
         self.is_find_alive = False
 
-        if not self.main_notebook.tabs(): return
+        if not self.main_notebook.tabs():
+            return
 
         self.main_notebook.get_tab()[1].text.tag_remove('search', '1.0', 'end')
         self.main_notebook.get_tab()[1].text.tag_remove('search_selected', '1.0', 'end')

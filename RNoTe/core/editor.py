@@ -1,4 +1,5 @@
 import sys
+
 import tkinter as tk
 from tkinter import messagebox
 
@@ -25,41 +26,38 @@ class Editor(tk.Tk):
 
         self.custom_notebook.add_tab()
 
-        binding_dict = {
-            '<Control-n>'    : self.custom_notebook.add_tab,
-            '<Control-o>'    : self.custom_notebook.open_file,
-            '<Control-s>'    : self.custom_notebook.save_file,
-            '<Control-Alt-s>': self.custom_notebook.save_file_as,
-            '<Control-F4>'   : self.custom_notebook.safely_close_file,
-            '<Control-f>'    : self.main_menu.popup_find_dialog,
-            '<Control-plus>' : self.main_menu.zoom_in_font,
-            '<Control-minus>': self.main_menu.zoom_out_font
+        binding = {
+            ('<Control-n>', '<Control-N>')         : self.custom_notebook.add_tab,
+            ('<Control-o>', '<Control-O>')         : self.custom_notebook.open_file,
+            ('<Control-s>', '<Control-S>')         : self.custom_notebook.save_file,
+            ('<Control-Alt-s>', '<Control-Alt-S>') : self.custom_notebook.save_file_as,
+            ('<Control-F4>',)                      : self.custom_notebook.safely_close_file,
+            ('<Control-f>', '<Control-F>')         : self.main_menu.popup_find_dialog,
+            ('<Control-plus>',)                    : self.main_menu.zoom_in_font,
+            ('<Control-minus>',)                   : self.main_menu.zoom_out_font
         }
 
-        for shortcut, method in binding_dict.items():
-            if (not shortcut.istitle()
-                and shortcut not in ['<Control-plus>', '<Control-minus>']):
-                self.bind(shortcut.title(), method)
-
-            self.bind(shortcut, method)
+        for shortcuts, method in binding.items():
+            for shortcut in shortcuts:
+                self.bind(shortcut, method)
 
         self.protocol('WM_DELETE_WINDOW', self.exiting)
 
     def exiting(self) -> None:
-        saving_result = []
+        if_saved = []
 
         for tab_id in self.custom_notebook.tabs():
-            if self.custom_notebook.nametowidget(tab_id).path:
-                self.main_menu.record_new_file(self.custom_notebook.nametowidget(tab_id).path)
-            saving_result.append(self.custom_notebook.nametowidget(tab_id).text.edit_modified())
+            path = self.custom_notebook.nametowidget(tab_id).path
+            if path:
+                self.main_menu.record_new_file(path)
+            if_saved.append(self.custom_notebook.nametowidget(tab_id).text.edit_modified())
 
-        if any(saving_result):
+        if any(if_saved):
             reply = messagebox.askyesnocancel(
                 title = MAIN_WINDOW_TITLE,
                 message = '存在未保存的文件，在关闭程序前手动保存所有文件？'
             )
-            if reply: return
-            elif reply is None: return
+            if reply or reply is None:
+                return
 
-        self.update()  # To make sure the clipboard has been saved.
         sys.exit()
