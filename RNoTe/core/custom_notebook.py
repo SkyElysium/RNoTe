@@ -365,7 +365,9 @@ class TextTab(tk.Frame):
         else:
             self.notebook.tab(self.notebook.get_tab()[0], text = self.label)
 
-    def _no_clicking_line_number_bar(self, event: tk.Event) -> str: return 'break'
+    def _no_clicking_line_number_bar(self, event: tk.Event) -> str:
+        
+        return 'break'
 
     def _selecting_scrolling(self, event: tk.Event) -> None:
 
