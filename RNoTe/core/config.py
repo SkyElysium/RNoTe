@@ -26,7 +26,7 @@ ZOOM_IN       = '放大'
 ZOOM_OUT      = '缩小'
 ORIGINAL_SIZE = '恢复默认大小'
 ABOUT         = '关于'
-REPORT        = '报告问题'
+FEEDBACK      = '反馈'
 
 COPY_PRESENT_PATH = '复制当前文件路径'
 
@@ -40,7 +40,7 @@ FIRST_INFO = 'https://github.com/SkyElysium/RNoTe'
 SECOND_INFO = '''
 
 MIT License
-Copyright (c) 2025 SkyElysium.
+Copyright (c) 2025 SkyElysium
 '''
 
 ISSUE_URL = 'https://github.com/SkyElysium/RNoTe/issues/new'
