@@ -51,7 +51,7 @@ class Editor(tk.Tk):
             path = self.custom_notebook.nametowidget(tab_id).path
             if path:
                 self.main_menu.record_new_file(path)
-            if_saved.append(self.custom_notebook.nametowidget(tab_id).text.edit_modified())
+            if_saved.append(self.custom_notebook.nametowidget(tab_id).text_panel.edit_modified())
 
         if any(if_saved):
             reply = messagebox.askyesnocancel(

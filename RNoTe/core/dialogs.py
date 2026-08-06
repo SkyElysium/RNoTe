@@ -52,12 +52,12 @@ class FindDialog(Dialog):
 
     def __init__(self, master: tk.Misc) -> None:
 
-        if FindDialog.is_alive:
-            FindDialog.instance.focus()
+        if self.is_alive:
+            self.instance.focus()
 
             return
 
-        FindDialog.is_alive = True
+        self.is_alive = True
 
         super().__init__(master)
 
@@ -132,8 +132,8 @@ class FindDialog(Dialog):
 
         _, tab = self.master.custom_notebook.get_tab()
 
-        tab.text.tag_remove('search', '1.0', 'end')
-        tab.text.tag_remove('search_selected', '1.0', 'end')
+        tab.text_panel.tag_remove('searched', '1.0', 'end')
+        tab.text_panel.tag_remove('selected', '1.0', 'end')
 
         text = self.search_entry.get()
         start = '1.0'
@@ -145,17 +145,19 @@ class FindDialog(Dialog):
 
         while text:
             try:
-                start_pos = tab.text.search(text, start, 'end', regexp = self.is_regexp_on, count = length)
+                start_pos = tab.text_panel.search(text, start, 'end', regexp = self.is_regexp_on, count = length)
             except tk.TclError:
                 start_pos = ''  # When RegExp grammar is wrong, enter.
 
             if not start_pos:
+                self.search_entry.bell()
+
                 break
 
             end_pos = f'{start_pos}+{length.get()}c'
 
             self.word_indexes.append((start_pos, end_pos))
-            tab.text.tag_add('search', start_pos, end_pos)
+            tab.text_panel.tag_add('searched', start_pos, end_pos)
 
             start = end_pos
 
@@ -186,11 +188,11 @@ class FindDialog(Dialog):
 
         _, tab = self.master.custom_notebook.get_tab()
 
-        tab.text.see(self.word_indexes[self.current][0])
+        tab.text_panel.see(self.word_indexes[self.current][0])
         tab.line_number_bar.scroll_when_searching()
 
-        tab.text.tag_remove('search_selected', '1.0', 'end')
-        tab.text.tag_add('search_selected', self.word_indexes[self.current][0], self.word_indexes[self.current][1])
+        tab.text_panel.tag_remove('searched', '1.0', 'end')
+        tab.text_panel.tag_add('selected', self.word_indexes[self.current][0], self.word_indexes[self.current][1])
 
         self.present_pos.set(f'{self.current + 1}/{len(self.word_indexes)}')
 
@@ -199,23 +201,24 @@ class FindDialog(Dialog):
         self.search_up_button.config(state = 'disabled')
         self.search_down_button.config(state = 'disabled')
 
-        self.master.custom_notebook.get_tab()[1].text.tag_remove('search', '1.0', 'end')
-        self.master.custom_notebook.get_tab()[1].text.tag_remove('search_selected', '1.0', 'end')
-
         self.present_pos.set('0/0')
+
+        if self.master.custom_notebook.tabs():
+            _, tab = self.master.custom_notebook.get_tab()
+
+            tab.text_panel.tag_remove('searched', '1.0', 'end')
+            tab.text_panel.tag_remove('selected', '1.0', 'end')
 
     def _exiting(self, event: tk.Event) -> None:
 
-        if not self.master.custom_notebook.tabs():
-            return
+        if self.master.custom_notebook.tabs():
+            _, tab = self.master.custom_notebook.get_tab()
 
-        _, tab = self.master.custom_notebook.get_tab()
+            tab.text_panel.tag_remove('searched', '1.0', 'end')
+            tab.text_panel.tag_remove('selected', '1.0', 'end')
 
-        tab.text.tag_remove('search', '1.0', 'end')
-        tab.text.tag_remove('search_selected', '1.0', 'end')
-
-        FindDialog.instance = None
-        FindDialog.is_alive = False
+        self.instance = None
+        self.is_alive = False
 
 
 class AboutDialog(Dialog):

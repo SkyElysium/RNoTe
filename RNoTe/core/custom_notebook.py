@@ -68,7 +68,7 @@ class CustomNotebook(ttk.Notebook):
 
         tab = self.tabs()[self.index(tab_id)] if tab_id else self.select()
 
-        if self.nametowidget(tab).text.edit_modified():
+        if self.nametowidget(tab).text_panel.edit_modified():
             reply = messagebox.askyesnocancel(
                 title = MAIN_WINDOW_TITLE,
                 message = '是否在关闭之前保存文件？'
@@ -156,7 +156,7 @@ class CustomNotebook(ttk.Notebook):
             text = file.read_text(encoding = 'utf-8')
 
             text_tab = self.add_tab(tab_name = file.name)
-            text_tab.text.insert('end', text)
+            text_tab.text_panel.insert('end', text)
         except UnicodeDecodeError:
             messagebox.showerror(
                 title = MAIN_WINDOW_TITLE,
@@ -168,10 +168,10 @@ class CustomNotebook(ttk.Notebook):
         text_tab.path = path
         text_tab.label = file.name
 
-        text_tab.text.edit_modified(False)
+        text_tab.text_panel.edit_modified(False)
 
-        text_tab.text.mark_set('insert', '1.0')
-        text_tab.text.focus_set()
+        text_tab.text_panel.mark_set('insert', '1.0')
+        text_tab.text_panel.focus_set()
 
         text_tab.line_number_bar.update_line_number()
 
@@ -191,10 +191,10 @@ class CustomNotebook(ttk.Notebook):
 
             return 'NotSaved' if not text_tab.path else None
 
-        text = text_tab.text.get('1.0', 'end-1c')  # No self adding "new line".
+        text = text_tab.text_panel.get('1.0', 'end-1c')  # No self adding "new line".
         file.write_text(text, encoding = 'utf-8')
 
-        text_tab.text.edit_modified(False)
+        text_tab.text_panel.edit_modified(False)
 
     def save_file_as(self, event: Optional[tk.Event] = None) -> None:
 
@@ -243,18 +243,10 @@ class TextTab(tk.Frame):
         # Widgets
         font_size = self.notebook.main_window.main_menu.font_size.get()
 
-        self.text = tk.Text(
-            self,
-            wrap = 'none',
-            undo = True,
-            bd = 0,
-            font = ('Consolas', font_size),
-            selectbackground = '#d3e9fc',
-            selectforeground = 'black'
-        )
+        self.text_panel = TextPanel(self, font_size)
 
-        self.text.tag_config('search', background = '#caebcb')
-        self.text.tag_config('search_selected', underline = True)
+        self.text_panel.tag_config('search', background ='#caebcb')
+        self.text_panel.tag_config('search_selected', underline = True)
 
         self.line_number_bar = LineNumberBar(self)
         self.line_number_bar.grid(row = 0, column = 0, rowspan = 2, sticky = 'ns')
@@ -265,36 +257,32 @@ class TextTab(tk.Frame):
         self.x_scrollbar = ttk.Scrollbar(self, orient = 'horizontal', style = 'Custom.Horizontal.TScrollbar')
         self.x_scrollbar.grid(row = 0, column = 1, sticky = 'sew')
 
-        self.text['xscrollcommand'] = self._is_out_of_text
-        self.x_scrollbar.config(command = self.text.xview)
+        self.text_panel['xscrollcommand'] = self._is_out_of_text
+        self.x_scrollbar.config(command = self.text_panel.xview)
 
-        self.text.grid(row = 0, column = 1, sticky = 'nsew')
+        self.text_panel.grid(row = 0, column = 1, sticky ='nsew')
 
-        self.text['yscrollcommand'] = self.scrollbar.set
+        self.text_panel['yscrollcommand'] = self.scrollbar.set
 
         self.scrollbar.config(command = self.line_number_bar.scroll)
 
         self._right_click_menu()
 
-        self.text.bind('<Control-o>', self._ctrl_o)
-        self.text.bind('<Button-3>', self._popup_menu)
+        self.text_panel.bind('<Control-o>', self._ctrl_o)
+        self.text_panel.bind('<Button-3>', self._popup_menu)
 
-        self.text.bind('<<Modified>>', self._text_is_changed)
+        self.text_panel.bind('<<Modified>>', self._text_is_changed)
 
         # For the line number bar
-        self.text.bind('<Any-KeyPress>', self._delay_to_update_line_number)
-        self.text.bind('<B2-Motion>', self._selecting_scrolling)
+        self.text_panel.bind('<Any-KeyPress>', self._delay_to_update_line_number)
+        self.text_panel.bind('<B2-Motion>', self._selecting_scrolling)
 
-        self.line_number_bar.bind('<Button-1>', self._no_clicking_line_number_bar)
-        self.line_number_bar.bind('<B2-Motion>', self._no_clicking_line_number_bar)
+        self.text_panel.bind('<MouseWheel>', self.line_number_bar.wheel)
 
-        self.text.bind('<MouseWheel>', self.line_number_bar.wheel)
-        self.line_number_bar.bind('<MouseWheel>', self.line_number_bar.wheel)
-
-        self.text.bind('<<Selection>>', self._selecting_scrolling)
+        self.text_panel.bind('<<Selection>>', self._selecting_scrolling)
 
         # For highlighting the current line
-        self.text.bind('<Button-1>', self._delay_to_highlight)
+        self.text_panel.bind('<Button-1>', self._delay_to_highlight)
 
         self.line_number_bar.update_line_number()
 
@@ -310,8 +298,8 @@ class TextTab(tk.Frame):
 
     def _popup_menu(self, event: tk.Event) -> None:
 
-        self.text.focus_set()
-        self.text.mark_set('insert', f'@{event.x}, {event.y}')
+        self.text_panel.focus_set()
+        self.text_panel.mark_set('insert', f'@{event.x}, {event.y}')
 
         self._delay_to_highlight()
 
@@ -351,23 +339,19 @@ class TextTab(tk.Frame):
 
     def _is_out_of_text(self, upper, lower) -> None:
 
-        if self.text.xview() != (0.0, 1.0):
-            self.x_scrollbar.lift(self.text)
+        if self.text_panel.xview() != (0.0, 1.0):
+            self.x_scrollbar.lift(self.text_panel)
         else:
-            self.x_scrollbar.lower(self.text)
+            self.x_scrollbar.lower(self.text_panel)
 
         self.x_scrollbar.set(upper, lower)
 
     def _text_is_changed(self, event: tk.Event) -> None:
 
-        if self.text.edit_modified():
+        if self.text_panel.edit_modified():
             self.notebook.tab(self.notebook.get_tab()[0], text = f'*{self.label}')
         else:
             self.notebook.tab(self.notebook.get_tab()[0], text = self.label)
-
-    def _no_clicking_line_number_bar(self, event: tk.Event) -> str:
-
-        return 'break'
 
     def _selecting_scrolling(self, event: tk.Event) -> None:
 
@@ -379,14 +363,14 @@ class TextTab(tk.Frame):
         if not self.notebook.tabs():
             return
 
-        self.text.event_generate('<<Copy>>')
+        self.text_panel.event_generate('<<Copy>>')
 
     def cut(self) -> None:
 
         if not self.notebook.tabs():
             return
 
-        self.text.event_generate('<<Cut>>')
+        self.text_panel.event_generate('<<Cut>>')
 
         self.line_number_bar.update_line_number()
 
@@ -395,7 +379,7 @@ class TextTab(tk.Frame):
         if not self.notebook.tabs():
             return
 
-        self.text.event_generate('<<Paste>>')
+        self.text_panel.event_generate('<<Paste>>')
 
         self.line_number_bar.update_line_number()
 
@@ -404,14 +388,14 @@ class TextTab(tk.Frame):
         if not self.notebook.tabs():
             return
 
-        self.text.event_generate('<<SelectAll>>')
+        self.text_panel.event_generate('<<SelectAll>>')
 
     def undo(self) -> None:
 
         if not self.notebook.tabs():
             return
 
-        self.text.event_generate('<<Undo>>')
+        self.text_panel.event_generate('<<Undo>>')
 
         self.line_number_bar.update_line_number()
 
@@ -420,7 +404,7 @@ class TextTab(tk.Frame):
         if not self.notebook.tabs():
             return
 
-        self.text.event_generate('<<Redo>>')
+        self.text_panel.event_generate('<<Redo>>')
 
         self.line_number_bar.update_line_number()
 
@@ -428,3 +412,17 @@ class TextTab(tk.Frame):
 
         self.notebook.main_window.clipboard_clear()
         self.notebook.main_window.clipboard_append(self.path)
+
+class TextPanel(tk.Text):
+    def __init__(self, master, font_size) -> None:
+
+        super().__init__(master)
+
+        self.config(
+            wrap = 'none',
+            undo = True,
+            bd = 0,
+            font = ('Consolas', font_size),
+            selectbackground = '#d3e9fc',
+            selectforeground = 'black'
+        )

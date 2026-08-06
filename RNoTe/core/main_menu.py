@@ -285,7 +285,7 @@ class MainMenu(tk.Menu):
             tab = self.master.custom_notebook.nametowidget(tab_id)
 
             tab.line_number_bar.config(font = ('Consolas', self.font_size.get()))
-            tab.text.config(font = ('Consolas', self.font_size.get()))
+            tab.text_panel.config(font = ('Consolas', self.font_size.get()))
 
     def zoom_in_font(self, event: Optional[tk.Event] = None) -> None:
 
