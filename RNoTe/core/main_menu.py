@@ -19,14 +19,6 @@ class MainMenu(tk.Menu):
         self.font_size = tk.IntVar(self, 13)
         self.font_size.trace('w', self._change_font_size)
 
-        # Config of "find"
-        self.pos_list = []
-        self.current = -1
-        self.idx = tk.StringVar(self, '0/0')
-
-        self.is_find_alive = False
-        self.is_regexp_on = False
-
         self['postcommand'] = self._change_status_of_options
 
         # Options that need checking the status in "_change_status_of_options"
