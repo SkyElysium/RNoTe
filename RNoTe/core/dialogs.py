@@ -146,8 +146,8 @@ class FindDialog(Dialog):
         while text:
             try:
                 start_pos = tab.text.search(text, start, 'end', regexp = self.is_regexp_on, count = length)
-            except:
-                pass  # When RegExp grammar is wrong, enter.
+            except tk.TclError:
+                start_pos = ''  # When RegExp grammar is wrong, enter.
 
             if not start_pos:
                 break

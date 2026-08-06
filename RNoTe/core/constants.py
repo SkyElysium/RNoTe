@@ -30,6 +30,7 @@ FEEDBACK      = '反馈'
 
 COPY_PRESENT_PATH = '复制当前文件路径'
 
+# Used at dialogs.py for "about".
 REPO_URL = 'https://github.com/SkyElysium/RNoTe'
 COPYRIGHT = '''
 

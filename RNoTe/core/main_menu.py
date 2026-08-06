@@ -178,11 +178,11 @@ class MainMenu(tk.Menu):
 
         self.about_option.add_command(
             label = ABOUT,
-            command = self._popup_about_dialog
+            command = lambda : AboutDialog(self.master)
         )
         self.about_option.add_command(
             label = FEEDBACK,
-            command = self._link_to_issue
+            command = lambda : webbrowser.open(ISSUE_URL)
         )
 
         self.add_cascade(label = ABOUT, menu = self.about_option)
@@ -264,9 +264,9 @@ class MainMenu(tk.Menu):
 
         self.tab_list.delete('0', 'end')
 
-        list_ = self.master.custom_notebook.tabs()
+        tabs_id = self.master.custom_notebook.tabs()
 
-        for tab_id in list_:
+        for tab_id in tabs_id:
             tab = self.master.custom_notebook.nametowidget(tab_id)
             now_tab_id, _ = self.master.custom_notebook.get_tab()
 
@@ -277,7 +277,7 @@ class MainMenu(tk.Menu):
                 command = lambda tab_id = tab_id: self.master.custom_notebook.select(tab_id)
             )
 
-            if tab_id == now_tab_id: self.tab_list.entryconfig(list_.index(tab_id), state = 'disabled')
+            if tab_id == now_tab_id: self.tab_list.entryconfig(tabs_id.index(tab_id), state = 'disabled')
 
     def _change_font_size(self, *args) -> None:
 
@@ -304,11 +304,3 @@ class MainMenu(tk.Menu):
     def popup_find_dialog(self, event: Optional[tk.Event] = None) -> None:
 
         FindDialog(self.master)
-
-    def _popup_about_dialog(self) -> None:
-
-        AboutDialog(self.master)
-
-    def _link_to_issue(self) -> None:
-
-        webbrowser.open(ISSUE_URL)
