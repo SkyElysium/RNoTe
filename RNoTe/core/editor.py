@@ -3,7 +3,7 @@ import sys
 import tkinter as tk
 from tkinter import messagebox
 
-from core.config import *
+from core.constants import *
 from core.main_menu import MainMenu
 from core.custom_notebook import CustomNotebook
 
@@ -44,6 +44,7 @@ class Editor(tk.Tk):
         self.protocol('WM_DELETE_WINDOW', self.exiting)
 
     def exiting(self) -> None:
+
         if_saved = []
 
         for tab_id in self.custom_notebook.tabs():

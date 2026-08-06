@@ -7,7 +7,7 @@ from tkinter import filedialog, messagebox
 
 from pathlib import Path
 
-from core.config import *
+from core.constants import *
 from core.line_number_bar import LineNumberBar
 
 
@@ -274,7 +274,7 @@ class TextTab(tk.Frame):
 
         self.scrollbar.config(command = self.line_number_bar.scroll)
 
-        self.right_click_menu()
+        self._right_click_menu()
 
         self.text.bind('<Control-o>', self._ctrl_o)
         self.text.bind('<Button-3>', self._popup_menu)
@@ -298,7 +298,7 @@ class TextTab(tk.Frame):
 
         self.line_number_bar.update_line_number()
 
-    def right_click_menu(self) -> None:
+    def _right_click_menu(self) -> None:
 
         self.menu = tk.Menu(self, tearoff = False, activeforeground = 'black', activebackground = '#91c9f7')
 
@@ -366,7 +366,7 @@ class TextTab(tk.Frame):
             self.notebook.tab(self.notebook.get_tab()[0], text = self.label)
 
     def _no_clicking_line_number_bar(self, event: tk.Event) -> str:
-        
+
         return 'break'
 
     def _selecting_scrolling(self, event: tk.Event) -> None:

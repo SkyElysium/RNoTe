@@ -5,7 +5,8 @@ import tkinter.ttk as ttk
 
 import webbrowser
 
-from core.config import *
+from core.constants import *
+from core.dialogs import FindDialog, AboutDialog
 
 
 class MainMenu(tk.Menu):
@@ -13,7 +14,6 @@ class MainMenu(tk.Menu):
 
         super().__init__(master)
 
-        self.main_notebook = master.custom_notebook
         self.master = master
 
         self.font_size = tk.IntVar(self, 13)
@@ -45,23 +45,23 @@ class MainMenu(tk.Menu):
         self.file_option.add_command(
             label = NEW,
             accelerator = 'Ctrl+N',
-            command = self.main_notebook.add_tab
+            command = self.master.custom_notebook.add_tab
         )
         self.file_option.add_separator()
         self.file_option.add_command(
             label = OPEN,
             accelerator = 'Ctrl+O',
-            command = self.main_notebook.open_file
+            command = self.master.custom_notebook.open_file
         )
         self.file_option.add_command(
             label = SAVE,
             accelerator = 'Ctrl+S',
-            command = self.main_notebook.save_file
+            command = self.master.custom_notebook.save_file
         )
         self.file_option.add_command(
             label = SAVE_AS,
             accelerator = 'Ctrl+Alt+S',
-            command = self.main_notebook.save_file_as
+            command = self.master.custom_notebook.save_file_as
         )
 
         # File List
@@ -91,7 +91,7 @@ class MainMenu(tk.Menu):
         self.file_option.add_command(
             label = CLOSE,
             accelerator = 'Ctrl+F4',
-            command = self.main_notebook.safely_close_file
+            command = self.master.custom_notebook.safely_close_file
         )
         self.file_option.add_separator()
         self.file_option.add_command(
@@ -113,34 +113,34 @@ class MainMenu(tk.Menu):
         self.edit_option.add_command(
             label = UNDO,
             accelerator = 'Ctrl+Z',
-            command = lambda : self.main_notebook.get_tab()[1].undo()
+            command = lambda : self.master.custom_notebook.get_tab()[1].undo()
         )
         self.edit_option.add_command(
             label = REDO,
             accelerator = 'Ctrl+Y',
-            command = lambda : self.main_notebook.get_tab()[1].redo()
+            command = lambda : self.master.custom_notebook.get_tab()[1].redo()
         )
         self.edit_option.add_separator()
         self.edit_option.add_command(
             label = COPY,
             accelerator = 'Ctrl+C',
-            command = lambda : self.main_notebook.get_tab()[1].copy()
+            command = lambda : self.master.custom_notebook.get_tab()[1].copy()
         )
         self.edit_option.add_command(
             label = CUT,
             accelerator = 'Ctrl+X',
-            command = lambda : self.main_notebook.get_tab()[1].cut()
+            command = lambda : self.master.custom_notebook.get_tab()[1].cut()
         )
         self.edit_option.add_command(
             label = PASTE,
             accelerator = 'Ctrl+V',
-            command = lambda : self.main_notebook.get_tab()[1].paste()
+            command = lambda : self.master.custom_notebook.get_tab()[1].paste()
         )
         self.edit_option.add_separator()
         self.edit_option.add_command(
             label = SELECT_ALL,
             accelerator = 'Ctrl+A',
-            command = lambda : self.main_notebook.get_tab()[1].select_all()
+            command = lambda : self.master.custom_notebook.get_tab()[1].select_all()
         )
         self.edit_option.add_separator()
         self.edit_option.add_command(
@@ -197,7 +197,7 @@ class MainMenu(tk.Menu):
 
     def _change_status_of_options(self) -> None:
 
-        status = 'disabled' if not self.main_notebook.tabs() else 'normal'
+        status = 'disabled' if not self.master.custom_notebook.tabs() else 'normal'
 
         for option in ['file', 'edit', 'view']:
             for each in eval(f'self.{option}_option_checklist'):
@@ -205,7 +205,7 @@ class MainMenu(tk.Menu):
 
         try:
             self.master.clipboard_get()
-            if self.main_notebook.tabs():
+            if self.master.custom_notebook.tabs():
                 self.edit_option.entryconfig(PASTE, state = 'normal')
         except tk.TclError:
             self.edit_option.entryconfig(PASTE, state = 'disabled')
@@ -215,21 +215,26 @@ class MainMenu(tk.Menu):
 
     def _get_file_list(self) -> None:
 
-        with open('data/config/recent_files.txt', 'r', encoding = 'utf-8') as f:
-            paths = f.read().splitlines()
+        try:
+            with open('data/config/recent_files.txt', 'r', encoding = 'utf-8') as f:
+                paths = f.read().splitlines()
 
-            if not paths:
-                self.file_option.entryconfig(OPEN_RECENTLY, state = 'disabled')
+                if not paths:
+                    self.file_option.entryconfig(OPEN_RECENTLY, state = 'disabled')
 
-                return
-            else: self.file_option.entryconfig(OPEN_RECENTLY, state = 'normal')
+                    return
+                else: self.file_option.entryconfig(OPEN_RECENTLY, state = 'normal')
+        except FileNotFoundError:
+            self.file_option.entryconfig(OPEN_RECENTLY, state = 'disabled')
+
+            return
 
         self.file_list.delete('0', 'end')
 
         for path in reversed(paths):
             self.file_list.add_command(
                 label = path,
-                command = lambda path = path: self.main_notebook.open_file(file_path = path)
+                command = lambda path = path: self.master.custom_notebook.open_file(file_path = path)
             )
 
         self.file_list.add_separator()
@@ -262,234 +267,55 @@ class MainMenu(tk.Menu):
 
     def _get_tab_list(self) -> None:
 
-        if not self.main_notebook.tabs():
+        if not self.master.custom_notebook.tabs():
             return
 
         self.tab_list.delete('0', 'end')
 
-        list_ = self.main_notebook.tabs()
+        list_ = self.master.custom_notebook.tabs()
 
         for tab_id in list_:
-            tab = self.main_notebook.nametowidget(tab_id)
-            now_tab_id, _ = self.main_notebook.get_tab()
+            tab = self.master.custom_notebook.nametowidget(tab_id)
+            now_tab_id, _ = self.master.custom_notebook.get_tab()
 
             tab_name = tab.label
 
             self.tab_list.add_command(
                 label = tab_name,
-                command = lambda tab_id = tab_id: self.main_notebook.select(tab_id)
+                command = lambda tab_id = tab_id: self.master.custom_notebook.select(tab_id)
             )
 
             if tab_id == now_tab_id: self.tab_list.entryconfig(list_.index(tab_id), state = 'disabled')
 
     def _change_font_size(self, *args) -> None:
 
-        for tab_id in self.main_notebook.tabs():
-            tab = self.main_notebook.nametowidget(tab_id)
+        for tab_id in self.master.custom_notebook.tabs():
+            tab = self.master.custom_notebook.nametowidget(tab_id)
 
             tab.line_number_bar.config(font = ('Consolas', self.font_size.get()))
             tab.text.config(font = ('Consolas', self.font_size.get()))
 
     def zoom_in_font(self, event: Optional[tk.Event] = None) -> None:
 
-        if not self.main_notebook.tabs() or self.font_size.get() == 60:
+        if not self.master.custom_notebook.tabs() or self.font_size.get() == 60:
             return
 
         self.font_size.set(self.font_size.get() + 1)
 
     def zoom_out_font(self, event: Optional[tk.Event] = None) -> None:
 
-        if not self.main_notebook.tabs() or self.font_size.get() == 1:
+        if not self.master.custom_notebook.tabs() or self.font_size.get() == 1:
             return
 
         self.font_size.set(self.font_size.get() - 1)
 
-    def popup_find_dialog(self, event: tk.Event = None) -> None:
+    def popup_find_dialog(self, event: Optional[tk.Event] = None) -> None:
 
-        if not self.main_notebook.tabs():
-            return
-
-        if self.is_find_alive:
-            return
-        self.is_find_alive = True
-
-        dialog = tk.Toplevel()
-        dialog.transient(self.master)
-        dialog.title(TITLE_FIND)
-
-        x, y = self.master.winfo_x(), self.master.winfo_y()
-        dialog.geometry('330x30')
-        dialog.geometry(f'+{x}+{y}')
-
-        dialog.attributes('-topmost', True)
-
-        dialog.resizable(False, False)
-        dialog.focus()
-
-        dialog.bind('<FocusOut>', lambda event: self._focus_out_of_find(find_up_button, find_down_button))
-        dialog.bind('<Destroy>', self._exit)
-
-        regexp = ttk.Button(
-            dialog,
-            text = '.*' if not self.is_regexp_on else '.-',
-            width = 2,
-            takefocus = False,
-            padding = 0.1,
-            command = lambda : self._change_status_of_regexp(regexp),
-        )
-        regexp.place(x = 20, y = 2)
-
-        find_entry = ttk.Entry(dialog)
-        find_entry.place(x = 50, y = 3)
-
-        self.pos_list.clear()
-        self.current = -1
-
-        find_entry.bind(
-            '<Return>',
-            lambda event: self._search_for_words(find_entry, find_up_button, find_down_button)
-        )
-
-        index_label = tk.Label(dialog, textvariable = self.idx)
-        index_label.place(x = 215, y = 3)
-
-        find_up_button = ttk.Button(
-            dialog,
-            text = '<',
-            width = 2,
-            takefocus = False,
-            command = self._search_up,
-            state = 'disabled'
-        )
-        find_up_button.place(x = 260, y = 1)
-
-        find_down_button = ttk.Button(
-            dialog,
-            text = '>',
-            width = 2,
-            takefocus = False,
-            command = self._search_down,
-            state = 'disabled'
-        )
-        find_down_button.place(x = 285, y = 1)
-
-    def _change_status_of_regexp(self, regexp_button: ttk.Button) -> None:
-
-        if not self.is_regexp_on:
-            self.is_regexp_on = True
-            regexp_button.config(text = '.-')
-        else:
-            self.is_regexp_on = False
-            regexp_button.config(text = '.*')
-
-    def _search_for_words(self, entry: ttk.Entry, up: ttk.Button, down: ttk.Button) -> None:
-
-        if not self.main_notebook.tabs():
-            return
-
-        _, tab = self.main_notebook.get_tab()
-        tab.text.tag_remove('search', '1.0', 'end')
-
-        word = entry.get()
-        length = tk.StringVar()
-        start = '1.0'
-
-        self.current = -1
-        self.main_notebook.get_tab()[1].text.tag_remove('search', '1.0', 'end')
-        self.main_notebook.get_tab()[1].text.tag_remove('search_selected', '1.0', 'end')
-
-        self.pos_list.clear()
-
-        while word:
-            try:
-                pos = tab.text.search(word, start, 'end', regexp = self.is_regexp_on, count = length)
-            except:
-                pass  # When RegExp grammar is wrong, enter.
-
-            if not pos:
-                break
-
-            self.pos_list.append((pos, f'{pos}+{length.get()}c'))
-            tab.text.tag_add('search', pos, f'{pos}+{length.get()}c')
-
-            start = f'{pos}+{length.get()}c'
-
-        state = 'normal' if self.pos_list else 'disabled'
-
-        up.config(state = state)
-        down.config(state = state)
-
-        self.idx.set(f'0/{len(self.pos_list)}')
-
-    def _search_up(self) -> None:
-
-        if self.current >= 0:
-            if self.current != 0:
-                self.current -= 1
-
-            self._dump_to_word()
-
-    def _search_down(self) -> None:
-
-        if len(self.pos_list) - 1 >= self.current:
-            if len(self.pos_list) - 1 != self.current:
-                self.current += 1
-
-            self._dump_to_word()
-
-    def _dump_to_word(self) -> None:
-
-        _, tab = self.main_notebook.get_tab()
-
-        tab.text.see(self.pos_list[self.current][0])
-        tab.line_number_bar.scroll_when_searching()
-
-        tab.text.tag_remove('search_selected', '1.0', 'end')
-        tab.text.tag_add('search_selected', self.pos_list[self.current][0], self.pos_list[self.current][1])
-
-        self.idx.set(f'{self.current + 1}/{len(self.pos_list)}')
-
-    def _focus_out_of_find(self, up: ttk.Button, down: ttk.Button) -> None:
-
-        up.config(state = 'disabled')
-        down.config(state = 'disabled')
-
-        self.main_notebook.get_tab()[1].text.tag_remove('search', '1.0', 'end')
-        self.main_notebook.get_tab()[1].text.tag_remove('search_selected', '1.0', 'end')
-
-        self.idx.set('0/0')
-
-    def _exit(self, event: tk.Event = None) -> None:
-
-        self.is_find_alive = False
-
-        if not self.main_notebook.tabs():
-            return
-
-        self.main_notebook.get_tab()[1].text.tag_remove('search', '1.0', 'end')
-        self.main_notebook.get_tab()[1].text.tag_remove('search_selected', '1.0', 'end')
-
-        self.idx.set('0/0')
+        FindDialog(self.master)
 
     def _popup_about_dialog(self) -> None:
 
-        dialog = tk.Toplevel()
-        dialog.transient(self.master)
-        dialog.title(TITLE_ABOUT)
-
-        x, y = self.master.winfo_x(), self.master.winfo_y()
-        dialog.geometry('350x120')
-        dialog.geometry(f'+{x + 200}+{y + 200}')
-
-        self.master.wm_attributes('-disabled', True)
-        dialog.bind('<Destroy>', lambda _: self.master.wm_attributes('-disabled', False))
-
-        dialog.resizable(False, False)
-        dialog.focus()
-
-        tk.Label(dialog, text = MAIN_WINDOW_TITLE, font = ('Consolas', 15)).pack()
-        tk.Message(dialog, text = FIRST_INFO, width = 600, fg = 'blue').pack()
-        tk.Message(dialog, text = SECOND_INFO, width = 600, justify = 'center').pack(side = 'bottom')
+        AboutDialog(self.master)
 
     def _link_to_issue(self) -> None:
 
