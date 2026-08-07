@@ -241,6 +241,9 @@ class TextTab(tk.Frame):
         self.grid_rowconfigure(0, weight = 1)
 
         # Widgets
+        self.line_number_bar = LineNumberBar(self)
+        self.line_number_bar.grid(row = 0, column = 0, rowspan = 2, sticky = 'ns')
+
         font_size = self.notebook.main_window.main_menu.font_size.get()
 
         self.text_panel = TextPanel(self, font_size)
@@ -248,16 +251,13 @@ class TextTab(tk.Frame):
         self.text_panel.tag_config('search', background ='#caebcb')
         self.text_panel.tag_config('search_selected', underline = True)
 
-        self.line_number_bar = LineNumberBar(self)
-        self.line_number_bar.grid(row = 0, column = 0, rowspan = 2, sticky = 'ns')
-
         self.scrollbar = tk.Scrollbar(self)
         self.scrollbar.grid(row = 0, column = 2, sticky = 'ns')
 
         self.x_scrollbar = ttk.Scrollbar(self, orient = 'horizontal', style = 'Custom.Horizontal.TScrollbar')
         self.x_scrollbar.grid(row = 0, column = 1, sticky = 'sew')
 
-        self.text_panel['xscrollcommand'] = self._is_out_of_text
+        self.text_panel['xscrollcommand'] = self.text_panel._is_out_of_text
         self.x_scrollbar.config(command = self.text_panel.xview)
 
         self.text_panel.grid(row = 0, column = 1, sticky ='nsew')
@@ -266,85 +266,19 @@ class TextTab(tk.Frame):
 
         self.scrollbar.config(command = self.line_number_bar.scroll)
 
-        self._right_click_menu()
-
-        self.text_panel.bind('<Control-o>', self._ctrl_o)
-        self.text_panel.bind('<Button-3>', self._popup_menu)
-
         self.text_panel.bind('<<Modified>>', self._text_is_changed)
 
-        # For the line number bar
-        self.text_panel.bind('<Any-KeyPress>', self._delay_to_update_line_number)
-        self.text_panel.bind('<B2-Motion>', self._selecting_scrolling)
-
-        self.text_panel.bind('<MouseWheel>', self.line_number_bar.wheel)
-
-        self.text_panel.bind('<<Selection>>', self._selecting_scrolling)
-
-        # For highlighting the current line
-        self.text_panel.bind('<Button-1>', self._delay_to_highlight)
-
         self.line_number_bar.update_line_number()
-
-    def _right_click_menu(self) -> None:
-
-        self.menu = tk.Menu(self, tearoff = False, activeforeground = 'black', activebackground = '#91c9f7')
-
-        self.menu.add_command(label = COPY, accelerator = 'Ctrl+C', command = self.copy)
-        self.menu.add_command(label = CUT, accelerator = 'Ctrl+X', command = self.cut)
-        self.menu.add_command(label = PASTE, accelerator = 'Ctrl+V', command = self.paste)
-        self.menu.add_separator()
-        self.menu.add_command(label = COPY_PRESENT_PATH, command = self._copy_file_path)
-
-    def _popup_menu(self, event: tk.Event) -> None:
-
-        self.text_panel.focus_set()
-        self.text_panel.mark_set('insert', f'@{event.x}, {event.y}')
-
-        self._delay_to_highlight()
-
-        self._check_status_of_options()
-
-        self.menu.post(event.x_root, event.y_root)
-
-    def _check_status_of_options(self) -> None:
-
-        if self.path:
-            self.menu.entryconfig(COPY_PRESENT_PATH, state = 'normal')
-        else:
-            self.menu.entryconfig(COPY_PRESENT_PATH, state = 'disabled')
-
-        try:
-            self.notebook.main_window.clipboard_get()
-            self.menu.entryconfig(PASTE, state = 'normal')
-        except tk.TclError:
-            self.menu.entryconfig(PASTE, state = 'disabled')
 
     def _delay_to_update_line_number(self, event: Optional[tk.Event] = None) -> None:
 
         # Wait until entering successfully.
         self.after(1, self.line_number_bar.update_line_number)
 
-    def _delay_to_highlight(self, event: Optional[tk.Event] = None) -> None:
+    def delay_to_highlight(self, event: Optional[tk.Event] = None) -> None:
 
         # Wait until clicking successfully.
         self.after(1, self.line_number_bar.update_highlight_current_line)
-
-    def _ctrl_o(self, event: tk.Event) -> str:
-
-        # Tkinter has bound ctrl+o inside "Text".
-        self.notebook.open_file()
-
-        return 'break'
-
-    def _is_out_of_text(self, upper, lower) -> None:
-
-        if self.text_panel.xview() != (0.0, 1.0):
-            self.x_scrollbar.lift(self.text_panel)
-        else:
-            self.x_scrollbar.lower(self.text_panel)
-
-        self.x_scrollbar.set(upper, lower)
 
     def _text_is_changed(self, event: tk.Event) -> None:
 
@@ -358,65 +292,12 @@ class TextTab(tk.Frame):
         # Important in B2-Motion for not strange yview.
         self.after(1, self.line_number_bar.scroll_when_selecting)
 
-    def copy(self) -> None:
-
-        if not self.notebook.tabs():
-            return
-
-        self.text_panel.event_generate('<<Copy>>')
-
-    def cut(self) -> None:
-
-        if not self.notebook.tabs():
-            return
-
-        self.text_panel.event_generate('<<Cut>>')
-
-        self.line_number_bar.update_line_number()
-
-    def paste(self) -> None:
-
-        if not self.notebook.tabs():
-            return
-
-        self.text_panel.event_generate('<<Paste>>')
-
-        self.line_number_bar.update_line_number()
-
-    def select_all(self) -> None:
-
-        if not self.notebook.tabs():
-            return
-
-        self.text_panel.event_generate('<<SelectAll>>')
-
-    def undo(self) -> None:
-
-        if not self.notebook.tabs():
-            return
-
-        self.text_panel.event_generate('<<Undo>>')
-
-        self.line_number_bar.update_line_number()
-
-    def redo(self) -> None:
-
-        if not self.notebook.tabs():
-            return
-
-        self.text_panel.event_generate('<<Redo>>')
-
-        self.line_number_bar.update_line_number()
-
-    def _copy_file_path(self) -> None:
-
-        self.notebook.main_window.clipboard_clear()
-        self.notebook.main_window.clipboard_append(self.path)
-
 class TextPanel(tk.Text):
     def __init__(self, master, font_size) -> None:
 
         super().__init__(master)
+
+        self.master = master
 
         self.config(
             wrap = 'none',
@@ -426,3 +307,124 @@ class TextPanel(tk.Text):
             selectbackground = '#d3e9fc',
             selectforeground = 'black'
         )
+
+        self.bind('<Button-3>', self._popup_menu)
+        self.bind('<Control-o>', self._ctrl_o)
+
+        # For highlighting the current line
+        self.bind('<Button-1>', self.master.delay_to_highlight)
+
+        # For the line number bar
+        self.bind('<Any-KeyPress>', self.master._delay_to_update_line_number)
+        self.bind('<B2-Motion>', self.master._selecting_scrolling)
+
+        self.bind('<MouseWheel>', self.master.line_number_bar.wheel)
+
+        self.bind('<<Selection>>', self.master._selecting_scrolling)
+
+        self._right_click_menu()
+
+    def _right_click_menu(self) -> None:
+
+        self.menu = tk.Menu(self, tearoff = False, activeforeground = 'black', activebackground = '#91c9f7')
+
+        self.menu.add_command(label = COPY, accelerator = 'Ctrl+C', command = self.copy)
+        self.menu.add_command(label = CUT, accelerator = 'Ctrl+X', command = self.cut)
+        self.menu.add_command(label = PASTE, accelerator = 'Ctrl+V', command = self.paste)
+        self.menu.add_separator()
+        self.menu.add_command(label = COPY_PRESENT_PATH, command = self._copy_file_path)
+
+    def _popup_menu(self, event: tk.Event) -> None:
+
+        self.focus_set()
+        self.mark_set('insert', f'@{event.x}, {event.y}')
+
+        self.master.delay_to_highlight()
+
+        self._check_status_of_options()
+
+        self.menu.post(event.x_root, event.y_root)
+
+    def _check_status_of_options(self) -> None:
+
+        if self.master.path:
+            self.menu.entryconfig(COPY_PRESENT_PATH, state = 'normal')
+        else:
+            self.menu.entryconfig(COPY_PRESENT_PATH, state = 'disabled')
+
+        try:
+            self.master.notebook.main_window.clipboard_get()
+            self.menu.entryconfig(PASTE, state = 'normal')
+        except tk.TclError:
+            self.menu.entryconfig(PASTE, state = 'disabled')
+
+    def _ctrl_o(self, event: tk.Event) -> str:
+
+        # Tkinter has bound ctrl+o inside "Text".
+        self.master.notebook.open_file()
+
+        return 'break'
+
+    def copy(self) -> None:
+
+        if not self.master.notebook.tabs():
+            return
+
+        self.event_generate('<<Copy>>')
+
+    def cut(self) -> None:
+
+        if not self.master.notebook.tabs():
+            return
+
+        self.event_generate('<<Cut>>')
+
+        self.master.line_number_bar.update_line_number()
+
+    def paste(self) -> None:
+
+        if not self.master.notebook.tabs():
+            return
+
+        self.event_generate('<<Paste>>')
+
+        self.master.line_number_bar.update_line_number()
+
+    def select_all(self) -> None:
+
+        if not self.master.notebook.tabs():
+            return
+
+        self.event_generate('<<SelectAll>>')
+
+    def undo(self) -> None:
+
+        if not self.master.notebook.tabs():
+            return
+
+        self.event_generate('<<Undo>>')
+
+        self.master.line_number_bar.update_line_number()
+
+    def redo(self) -> None:
+
+        if not self.master.notebook.tabs():
+            return
+
+        self.text_panel.event_generate('<<Redo>>')
+
+        self.line_number_bar.update_line_number()
+
+    def _copy_file_path(self) -> None:
+
+        self.master.notebook.main_window.clipboard_clear()
+        self.master.notebook.main_window.clipboard_append(self.path)
+
+    def _is_out_of_text(self, upper, lower) -> None:
+
+        if self.xview() != (0.0, 1.0):
+            self.master.x_scrollbar.lift(self)
+        else:
+            self.master.x_scrollbar.lower(self)
+
+        self.master.x_scrollbar.set(upper, lower)

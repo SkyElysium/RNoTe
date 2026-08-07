@@ -105,34 +105,34 @@ class MainMenu(tk.Menu):
         self.edit_option.add_command(
             label = UNDO,
             accelerator = 'Ctrl+Z',
-            command = lambda : self.master.custom_notebook.get_tab()[1].undo()
+            command = lambda : self.master.custom_notebook.get_tab()[1].text_panel.undo()
         )
         self.edit_option.add_command(
             label = REDO,
             accelerator = 'Ctrl+Y',
-            command = lambda : self.master.custom_notebook.get_tab()[1].redo()
+            command = lambda : self.master.custom_notebook.get_tab()[1].text_panel.redo()
         )
         self.edit_option.add_separator()
         self.edit_option.add_command(
             label = COPY,
             accelerator = 'Ctrl+C',
-            command = lambda : self.master.custom_notebook.get_tab()[1].copy()
+            command = lambda : self.master.custom_notebook.get_tab()[1].text_panel.copy()
         )
         self.edit_option.add_command(
             label = CUT,
             accelerator = 'Ctrl+X',
-            command = lambda : self.master.custom_notebook.get_tab()[1].cut()
+            command = lambda : self.master.custom_notebook.get_tab()[1].text_panel.cut()
         )
         self.edit_option.add_command(
             label = PASTE,
             accelerator = 'Ctrl+V',
-            command = lambda : self.master.custom_notebook.get_tab()[1].paste()
+            command = lambda : self.master.custom_notebook.get_tab()[1].text_panel.paste()
         )
         self.edit_option.add_separator()
         self.edit_option.add_command(
             label = SELECT_ALL,
             accelerator = 'Ctrl+A',
-            command = lambda : self.master.custom_notebook.get_tab()[1].select_all()
+            command = lambda : self.master.custom_notebook.get_tab()[1].text_panel.select_all()
         )
         self.edit_option.add_separator()
         self.edit_option.add_command(
