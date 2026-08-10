@@ -4,15 +4,13 @@ from typing import Optional
 
 
 class LineNumberBar(tk.Text):
-    def __init__(self, master: tk.Misc) -> None:
+    def __init__(self, master: tk.Misc, font_size: tk.IntVar) -> None:
 
         super().__init__(master)
 
         self.master = master
 
         self.max_width = 5
-
-        font_size = self.master.notebook.main_window.main_menu.font_size.get()
 
         self.config(
             width = self.max_width,
@@ -21,7 +19,7 @@ class LineNumberBar(tk.Text):
             state = 'disabled',
             cursor = 'arrow',
             bd = 0,
-            font = ('Consolas', font_size)
+            font = ('Consolas', font_size.get())
         )
 
         self.tag_config('center', justify = 'center')
@@ -41,7 +39,7 @@ class LineNumberBar(tk.Text):
         self.master.text_panel.yview(*xy)
         self.yview(*xy)
 
-    def scroll_when_selecting(self, event: Optional[tk.Event] = None) -> None:
+    def scroll_when_selecting(self, event: tk.Event) -> None:
 
         self.yview_moveto(self.master.text_panel.yview()[0])
 

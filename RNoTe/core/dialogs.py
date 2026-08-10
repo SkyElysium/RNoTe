@@ -150,8 +150,6 @@ class FindDialog(Dialog):
                 start_pos = ''  # When RegExp grammar is wrong, enter.
 
             if not start_pos:
-                self.search_entry.bell()
-
                 break
 
             end_pos = f'{start_pos}+{length.get()}c'
@@ -191,7 +189,7 @@ class FindDialog(Dialog):
         tab.text_panel.see(self.word_indexes[self.current][0])
         tab.line_number_bar.scroll_when_searching()
 
-        tab.text_panel.tag_remove('searched', '1.0', 'end')
+        tab.text_panel.tag_remove('selected', '1.0', 'end')
         tab.text_panel.tag_add('selected', self.word_indexes[self.current][0], self.word_indexes[self.current][1])
 
         self.present_pos.set(f'{self.current + 1}/{len(self.word_indexes)}')

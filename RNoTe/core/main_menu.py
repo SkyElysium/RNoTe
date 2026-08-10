@@ -17,7 +17,6 @@ class MainMenu(tk.Menu):
         self.master = master
 
         self.font_size = tk.IntVar(self, 13)
-        self.font_size.trace('w', self._change_font_size)
 
         self['postcommand'] = self._change_status_of_options
 
@@ -202,8 +201,10 @@ class MainMenu(tk.Menu):
         except tk.TclError:
             self.edit_option.entryconfig(PASTE, state = 'disabled')
 
-        self.view_option.entryconfig(ORIGINAL_SIZE,
-                                    state = 'disabled' if self.font_size.get() == 13 else 'normal')
+        self.view_option.entryconfig(
+            ORIGINAL_SIZE,
+            state = 'disabled' if self.font_size.get() == 13 else 'normal'
+        )
 
     def _get_file_list(self) -> None:
 
@@ -278,14 +279,6 @@ class MainMenu(tk.Menu):
             )
 
             if tab_id == now_tab_id: self.tab_list.entryconfig(tabs_id.index(tab_id), state = 'disabled')
-
-    def _change_font_size(self, *args) -> None:
-
-        for tab_id in self.master.custom_notebook.tabs():
-            tab = self.master.custom_notebook.nametowidget(tab_id)
-
-            tab.line_number_bar.config(font = ('Consolas', self.font_size.get()))
-            tab.text_panel.config(font = ('Consolas', self.font_size.get()))
 
     def zoom_in_font(self, event: Optional[tk.Event] = None) -> None:
 

@@ -120,6 +120,8 @@ class CustomNotebook(ttk.Notebook):
         # TabId for @x, y should be turned into ".!".
         tab = self.tabs()[self.index(tab_id)] if tab_id else self.select()
 
+        self.main_window.main_menu.font_size.trace_vdelete('w', self.nametowidget(tab).font_tracker)
+
         self.forget(tab)
         self.nametowidget(tab).destroy()
 
@@ -226,7 +228,7 @@ class CustomNotebook(ttk.Notebook):
 
 
 class TextTab(tk.Frame):
-    def __init__(self, master) -> None:
+    def __init__(self, master: tk.Misc) -> None:
 
         super().__init__(master)
 
@@ -236,16 +238,17 @@ class TextTab(tk.Frame):
         self.path = ''
         self.label = ''  # The label of tab
 
-        font_size = self.notebook.main_window.main_menu.font_size.get()
+        self.font_size = self.notebook.main_window.main_menu.font_size
+        self.font_tracker = self.font_size.trace('w', self._change_font_size)
 
         # Interface
         self.grid_columnconfigure(1, weight = 1)
         self.grid_rowconfigure(0, weight = 1)
 
-        self.line_number_bar = LineNumberBar(self)
+        self.line_number_bar = LineNumberBar(self, self.font_size)
         self.line_number_bar.grid(row = 0, column = 0, rowspan = 2, sticky = 'ns')
 
-        self.text_panel = TextPanel(self, font_size)
+        self.text_panel = TextPanel(self, self.font_size)
         self.text_panel.grid(row = 0, column = 1, sticky = 'nsew')
 
         self.scrollbar = tk.Scrollbar(self)
@@ -272,8 +275,13 @@ class TextTab(tk.Frame):
         # The timer prevents from being called before executing "click".
         self.after(1, self.line_number_bar.update_highlight_current_line)
 
+    def _change_font_size(self, *args) -> None:
+
+        self.line_number_bar.config(font = ('Consolas', self.font_size.get()))
+        self.text_panel.config(font = ('Consolas', self.font_size.get()))
+
 class TextPanel(tk.Text):
-    def __init__(self, master, font_size) -> None:
+    def __init__(self, master: tk.Misc, font_size: tk.IntVar) -> None:
 
         super().__init__(master)
 
@@ -283,13 +291,13 @@ class TextPanel(tk.Text):
             wrap = 'none',
             undo = True,
             bd = 0,
-            font = ('Consolas', font_size),
+            font = ('Consolas', font_size.get()),
             selectbackground = '#d3e9fc',
             selectforeground = 'black'
         )
 
-        self.tag_config('search', background = '#caebcb')
-        self.tag_config('search_selected', underline = True)
+        self.tag_config('searched', background = '#caebcb')
+        self.tag_config('selected', underline = True)
 
         self.bind('<Button-3>', self._popup_menu)
         self.bind('<Control-o>', self._ctrl_o)
