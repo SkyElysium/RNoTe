@@ -18,7 +18,7 @@ class CustomNotebook(ttk.Notebook):
 
         self.main_window = master
 
-        # Create the closing button.
+        # Create the "close" button.
         self.close_image = tk.PhotoImage(file = 'data/close.png')
 
         self.custom_style = ttk.Style()
@@ -48,7 +48,6 @@ class CustomNotebook(ttk.Notebook):
             arrowsize = 6
         )
 
-        # Binding part
         self.bind('<Button-1>', self._on_pressing_close)
         self.bind('<B1-Motion>', self._move_selected_tab)
 
@@ -233,23 +232,21 @@ class TextTab(tk.Frame):
 
         self.notebook = master
 
-        # Tab config
+        # Tab Info
         self.path = ''
-        self.label = ''  # A variable displayed on the tab
-
-        self.grid_columnconfigure(1, weight = 1)
-        self.grid_rowconfigure(0, weight = 1)
-
-        # Widgets
-        self.line_number_bar = LineNumberBar(self)
-        self.line_number_bar.grid(row = 0, column = 0, rowspan = 2, sticky = 'ns')
+        self.label = ''  # The label of tab
 
         font_size = self.notebook.main_window.main_menu.font_size.get()
 
-        self.text_panel = TextPanel(self, font_size)
+        # Interface
+        self.grid_columnconfigure(1, weight = 1)
+        self.grid_rowconfigure(0, weight = 1)
 
-        self.text_panel.tag_config('search', background ='#caebcb')
-        self.text_panel.tag_config('search_selected', underline = True)
+        self.line_number_bar = LineNumberBar(self)
+        self.line_number_bar.grid(row = 0, column = 0, rowspan = 2, sticky = 'ns')
+
+        self.text_panel = TextPanel(self, font_size)
+        self.text_panel.grid(row = 0, column = 1, sticky = 'nsew')
 
         self.scrollbar = tk.Scrollbar(self)
         self.scrollbar.grid(row = 0, column = 2, sticky = 'ns')
@@ -258,39 +255,22 @@ class TextTab(tk.Frame):
         self.x_scrollbar.grid(row = 0, column = 1, sticky = 'sew')
 
         self.text_panel['xscrollcommand'] = self.text_panel._is_out_of_text
-        self.x_scrollbar.config(command = self.text_panel.xview)
-
-        self.text_panel.grid(row = 0, column = 1, sticky ='nsew')
-
         self.text_panel['yscrollcommand'] = self.scrollbar.set
 
+        self.x_scrollbar.config(command = self.text_panel.xview)
         self.scrollbar.config(command = self.line_number_bar.scroll)
-
-        self.text_panel.bind('<<Modified>>', self._text_is_changed)
 
         self.line_number_bar.update_line_number()
 
-    def _delay_to_update_line_number(self, event: Optional[tk.Event] = None) -> None:
+    def delay_to_update_line_number(self, event: tk.Event) -> None:
 
-        # Wait until entering successfully.
+        # The timer prevents from being called before executing "enter".
         self.after(1, self.line_number_bar.update_line_number)
 
-    def delay_to_highlight(self, event: Optional[tk.Event] = None) -> None:
+    def delay_to_highlight(self, event: tk.Event = None) -> None:
 
-        # Wait until clicking successfully.
+        # The timer prevents from being called before executing "click".
         self.after(1, self.line_number_bar.update_highlight_current_line)
-
-    def _text_is_changed(self, event: tk.Event) -> None:
-
-        if self.text_panel.edit_modified():
-            self.notebook.tab(self.notebook.get_tab()[0], text = f'*{self.label}')
-        else:
-            self.notebook.tab(self.notebook.get_tab()[0], text = self.label)
-
-    def _selecting_scrolling(self, event: tk.Event) -> None:
-
-        # Important in B2-Motion for not strange yview.
-        self.after(1, self.line_number_bar.scroll_when_selecting)
 
 class TextPanel(tk.Text):
     def __init__(self, master, font_size) -> None:
@@ -308,19 +288,22 @@ class TextPanel(tk.Text):
             selectforeground = 'black'
         )
 
+        self.tag_config('search', background = '#caebcb')
+        self.tag_config('search_selected', underline = True)
+
         self.bind('<Button-3>', self._popup_menu)
         self.bind('<Control-o>', self._ctrl_o)
+        self.bind('<<Modified>>', self._text_is_changed)
 
         # For highlighting the current line
         self.bind('<Button-1>', self.master.delay_to_highlight)
 
         # For the line number bar
-        self.bind('<Any-KeyPress>', self.master._delay_to_update_line_number)
-        self.bind('<B2-Motion>', self.master._selecting_scrolling)
+        self.bind('<B2-Motion>', self._b2_motion)
+        self.bind('<<Selection>>', self.master.line_number_bar.scroll_when_selecting)
+        self.bind('<Any-KeyPress>', self.master.delay_to_update_line_number)
 
         self.bind('<MouseWheel>', self.master.line_number_bar.wheel)
-
-        self.bind('<<Selection>>', self.master._selecting_scrolling)
 
         self._right_click_menu()
 
@@ -357,13 +340,6 @@ class TextPanel(tk.Text):
             self.menu.entryconfig(PASTE, state = 'normal')
         except tk.TclError:
             self.menu.entryconfig(PASTE, state = 'disabled')
-
-    def _ctrl_o(self, event: tk.Event) -> str:
-
-        # Tkinter has bound ctrl+o inside "Text".
-        self.master.notebook.open_file()
-
-        return 'break'
 
     def copy(self) -> None:
 
@@ -418,7 +394,18 @@ class TextPanel(tk.Text):
     def _copy_file_path(self) -> None:
 
         self.master.notebook.main_window.clipboard_clear()
-        self.master.notebook.main_window.clipboard_append(self.path)
+        self.master.notebook.main_window.clipboard_append(self.master.path)
+
+    def _b2_motion(self, event: tk.Event) -> str:
+
+        return 'break'
+
+    def _ctrl_o(self, event: tk.Event) -> str:
+
+        # Tkinter has bound ctrl+o inside "Text".
+        self.master.notebook.open_file()
+
+        return 'break'
 
     def _is_out_of_text(self, upper, lower) -> None:
 
@@ -428,3 +415,10 @@ class TextPanel(tk.Text):
             self.master.x_scrollbar.lower(self)
 
         self.master.x_scrollbar.set(upper, lower)
+
+    def _text_is_changed(self, event: tk.Event) -> None:
+
+        if self.edit_modified():
+            self.master.notebook.tab(self.master.notebook.get_tab()[0], text = f'*{self.master.label}')
+        else:
+            self.master.notebook.tab(self.master.notebook.get_tab()[0], text = self.master.label)

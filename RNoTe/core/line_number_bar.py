@@ -1,5 +1,7 @@
 import tkinter as tk
 
+from typing import Optional
+
 
 class LineNumberBar(tk.Text):
     def __init__(self, master: tk.Misc) -> None:
@@ -39,7 +41,7 @@ class LineNumberBar(tk.Text):
         self.master.text_panel.yview(*xy)
         self.yview(*xy)
 
-    def scroll_when_selecting(self) -> None:
+    def scroll_when_selecting(self, event: Optional[tk.Event] = None) -> None:
 
         self.yview_moveto(self.master.text_panel.yview()[0])
 
