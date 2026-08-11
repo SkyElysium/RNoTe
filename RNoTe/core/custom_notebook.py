@@ -1,4 +1,3 @@
-from __future__ import annotations
 from typing import Optional, Tuple
 
 import tkinter as tk
@@ -12,11 +11,9 @@ from core.line_number_bar import LineNumberBar
 
 
 class CustomNotebook(ttk.Notebook):
-    def __init__(self, master: tk.Misc) -> None:
+    def __init__(self, master: 'Editor') -> None:
 
         super().__init__(master)
-
-        self.main_window = master
 
         # Create the "close" button.
         self.close_image = tk.PhotoImage(file = 'data/close.png')
@@ -78,7 +75,7 @@ class CustomNotebook(ttk.Notebook):
                 return
 
         if self.nametowidget(tab).path:
-            self.main_window.main_menu.record_new_file(self.nametowidget(tab).path)
+            self.master.main_menu.record_new_file(self.nametowidget(tab).path)
 
         self.remove_tab(tab_id = tab_id)
 
@@ -94,7 +91,7 @@ class CustomNotebook(ttk.Notebook):
 
     def _update_info_on_title(self, event: Optional[tk.Event] = None) -> None:
 
-        self.main_window.title(MAIN_WINDOW_TITLE)
+        self.master.title(MAIN_WINDOW_TITLE)
 
         if not self.tabs():
             return
@@ -102,9 +99,9 @@ class CustomNotebook(ttk.Notebook):
         _, text_tab = self.get_tab()
 
         if text_tab.path:
-            self.main_window.title(f'{MAIN_WINDOW_TITLE} - {text_tab.path}')
+            self.master.title(f'{MAIN_WINDOW_TITLE} - {text_tab.path}')
 
-    def add_tab(self, event: Optional[tk.Event] = None, tab_name: str = '未命名') -> TextTab:
+    def add_tab(self, event: Optional[tk.Event] = None, tab_name: str = '未命名') -> 'TextTab':
 
         text_tab = TextTab(self)
         text_tab.label = tab_name
@@ -120,14 +117,14 @@ class CustomNotebook(ttk.Notebook):
         # TabId for @x, y should be turned into ".!".
         tab = self.tabs()[self.index(tab_id)] if tab_id else self.select()
 
-        self.main_window.main_menu.font_size.trace_vdelete('w', self.nametowidget(tab).font_tracker)
+        self.master.main_menu.font_size.trace_vdelete('w', self.nametowidget(tab).font_tracker)
 
         self.forget(tab)
         self.nametowidget(tab).destroy()
 
         self._update_info_on_title()
 
-    def get_tab(self) -> Tuple[str, TextTab]:
+    def get_tab(self) -> Tuple[str, 'TextTab']:
 
         tab = self.select()
         text_tab = self.nametowidget(tab)
@@ -228,17 +225,15 @@ class CustomNotebook(ttk.Notebook):
 
 
 class TextTab(tk.Frame):
-    def __init__(self, master: tk.Misc) -> None:
+    def __init__(self, master: 'CustomNotebook') -> None:
 
         super().__init__(master)
-
-        self.notebook = master
 
         # Tab Info
         self.path = ''
         self.label = ''  # The label of tab
 
-        self.font_size = self.notebook.main_window.main_menu.font_size
+        self.font_size = self.master.master.main_menu.font_size
         self.font_tracker = self.font_size.trace('w', self._change_font_size)
 
         # Interface
@@ -280,12 +275,11 @@ class TextTab(tk.Frame):
         self.line_number_bar.config(font = ('Consolas', self.font_size.get()))
         self.text_panel.config(font = ('Consolas', self.font_size.get()))
 
+
 class TextPanel(tk.Text):
-    def __init__(self, master: tk.Misc, font_size: tk.IntVar) -> None:
+    def __init__(self, master: 'TextTab', font_size: tk.IntVar) -> None:
 
         super().__init__(master)
-
-        self.master = master
 
         self.config(
             wrap = 'none',
@@ -344,21 +338,21 @@ class TextPanel(tk.Text):
             self.menu.entryconfig(COPY_PRESENT_PATH, state = 'disabled')
 
         try:
-            self.master.notebook.main_window.clipboard_get()
+            self.master.master.master.clipboard_get()
             self.menu.entryconfig(PASTE, state = 'normal')
         except tk.TclError:
             self.menu.entryconfig(PASTE, state = 'disabled')
 
     def copy(self) -> None:
 
-        if not self.master.notebook.tabs():
+        if not self.master.master.tabs():
             return
 
         self.event_generate('<<Copy>>')
 
     def cut(self) -> None:
 
-        if not self.master.notebook.tabs():
+        if not self.master.master.tabs():
             return
 
         self.event_generate('<<Cut>>')
@@ -367,7 +361,7 @@ class TextPanel(tk.Text):
 
     def paste(self) -> None:
 
-        if not self.master.notebook.tabs():
+        if not self.master.master.tabs():
             return
 
         self.event_generate('<<Paste>>')
@@ -376,14 +370,14 @@ class TextPanel(tk.Text):
 
     def select_all(self) -> None:
 
-        if not self.master.notebook.tabs():
+        if not self.master.master.tabs():
             return
 
         self.event_generate('<<SelectAll>>')
 
     def undo(self) -> None:
 
-        if not self.master.notebook.tabs():
+        if not self.master.master.tabs():
             return
 
         self.event_generate('<<Undo>>')
@@ -392,7 +386,7 @@ class TextPanel(tk.Text):
 
     def redo(self) -> None:
 
-        if not self.master.notebook.tabs():
+        if not self.master.master.tabs():
             return
 
         self.text_panel.event_generate('<<Redo>>')
@@ -401,8 +395,8 @@ class TextPanel(tk.Text):
 
     def _copy_file_path(self) -> None:
 
-        self.master.notebook.main_window.clipboard_clear()
-        self.master.notebook.main_window.clipboard_append(self.master.path)
+        self.master.master.master.clipboard_clear()
+        self.master.master.master.clipboard_append(self.master.path)
 
     def _b2_motion(self, event: tk.Event) -> str:
 
@@ -411,7 +405,7 @@ class TextPanel(tk.Text):
     def _ctrl_o(self, event: tk.Event) -> str:
 
         # Tkinter has bound ctrl+o inside "Text".
-        self.master.notebook.open_file()
+        self.master.master.open_file()
 
         return 'break'
 
@@ -427,6 +421,6 @@ class TextPanel(tk.Text):
     def _text_is_changed(self, event: tk.Event) -> None:
 
         if self.edit_modified():
-            self.master.notebook.tab(self.master.notebook.get_tab()[0], text = f'*{self.master.label}')
+            self.master.master.tab(self.master.master.get_tab()[0], text = f'*{self.master.label}')
         else:
-            self.master.notebook.tab(self.master.notebook.get_tab()[0], text = self.master.label)
+            self.master.master.tab(self.master.master.get_tab()[0], text = self.master.label)

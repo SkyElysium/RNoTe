@@ -6,15 +6,13 @@ import tkinter.ttk as ttk
 import webbrowser
 
 from core.constants import *
-from core.dialogs import FindDialog, AboutDialog
+from core.dialogs import show_about_dialog, show_find_dialog
 
 
 class MainMenu(tk.Menu):
-    def __init__(self, master: tk.Misc) -> None:
+    def __init__(self, master: 'Editor') -> None:
 
         super().__init__(master)
-
-        self.master = master
 
         self.font_size = tk.IntVar(self, 13)
 
@@ -177,7 +175,7 @@ class MainMenu(tk.Menu):
 
         self.about_option.add_command(
             label = ABOUT,
-            command = lambda : AboutDialog(self.master)
+            command = show_about_dialog
         )
         self.about_option.add_command(
             label = FEEDBACK,
@@ -296,4 +294,4 @@ class MainMenu(tk.Menu):
 
     def popup_find_dialog(self, event: Optional[tk.Event] = None) -> None:
 
-        FindDialog(self.master)
+        show_find_dialog()

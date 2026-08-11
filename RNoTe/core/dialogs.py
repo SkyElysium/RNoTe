@@ -1,3 +1,5 @@
+from typing import Optional
+
 import tkinter as tk
 import tkinter.ttk as ttk
 
@@ -5,11 +7,9 @@ from core.constants import *
 
 
 class Dialog(tk.Toplevel):
-    def __init__(self, master: tk.Misc) -> None:
+    def __init__(self, master: Optional[tk.Misc]) -> None:
 
         super().__init__(master)
-
-        self.master = master
 
         self.transient(self.master)
 
@@ -50,18 +50,16 @@ class FindDialog(Dialog):
 
         return cls.instance
 
-    def __init__(self, master: tk.Misc) -> None:
+    def __init__(self, master: Optional[tk.Misc]) -> None:
 
-        if self.is_alive:
-            self.instance.focus()
+        if FindDialog.is_alive:
+            FindDialog.instance.focus()
 
             return
 
-        self.is_alive = True
+        FindDialog.is_alive = True
 
         super().__init__(master)
-
-        self.master = master
 
         self.set_dialog(self._DIALOG_TITLE, self._DIALOG_SIZE)
 
@@ -215,8 +213,12 @@ class FindDialog(Dialog):
             tab.text_panel.tag_remove('searched', '1.0', 'end')
             tab.text_panel.tag_remove('selected', '1.0', 'end')
 
-        self.instance = None
-        self.is_alive = False
+        FindDialog.is_alive = False
+        FindDialog.instance = None
+
+def show_find_dialog(master: Optional[tk.Misc] = None) -> None:
+
+    FindDialog(master)
 
 
 class AboutDialog(Dialog):
@@ -224,11 +226,9 @@ class AboutDialog(Dialog):
     _DIALOG_TITLE = '关于'
     _DIALOG_SIZE  = '350x120'
 
-    def __init__(self, master: tk.Misc) -> None:
+    def __init__(self, master: Optional[tk.Misc]) -> None:
 
         super().__init__(master)
-
-        self.master = master
 
         self.set_dialog(self._DIALOG_TITLE, self._DIALOG_SIZE)
 
@@ -243,3 +243,7 @@ class AboutDialog(Dialog):
 
         tk.Message(self, text = REPO_URL, width = 600, fg = 'blue').pack()
         tk.Message(self, text = COPYRIGHT, width = 600, justify = 'center').pack()
+
+def show_about_dialog(master: Optional[tk.Misc] = None) -> None:
+
+    AboutDialog(master)

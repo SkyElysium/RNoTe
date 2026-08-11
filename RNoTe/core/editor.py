@@ -1,4 +1,5 @@
 import sys
+
 import tkinter as tk
 from tkinter import messagebox
 
@@ -25,7 +26,7 @@ class Editor(tk.Tk):
 
         self.custom_notebook.add_tab()
 
-        binding = {
+        bindings = {
             ('<Control-n>', '<Control-N>')         : self.custom_notebook.add_tab,
             ('<Control-o>', '<Control-O>')         : self.custom_notebook.open_file,
             ('<Control-s>', '<Control-S>')         : self.custom_notebook.save_file,
@@ -36,7 +37,7 @@ class Editor(tk.Tk):
             ('<Control-minus>',)                   : self.main_menu.zoom_out_font
         }
 
-        for shortcuts, method in binding.items():
+        for shortcuts, method in bindings.items():
             for shortcut in shortcuts:
                 self.bind(shortcut, method)
 

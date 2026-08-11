@@ -1,14 +1,10 @@
 import tkinter as tk
 
-from typing import Optional
-
 
 class LineNumberBar(tk.Text):
-    def __init__(self, master: tk.Misc, font_size: tk.IntVar) -> None:
+    def __init__(self, master: 'TextTab', font_size: tk.IntVar) -> None:
 
         super().__init__(master)
-
-        self.master = master
 
         self.max_width = 5
 
