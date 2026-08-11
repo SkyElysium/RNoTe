@@ -43,6 +43,16 @@ class Editor(tk.Tk):
 
         self.protocol('WM_DELETE_WINDOW', self.exiting)
 
+    def save_win_clipboard(self) -> None:
+
+        # https://github.com/python/cpython/issues/84632
+        if sys.platform == 'win32':
+            from ctypes import windll
+            user32 = windll.user32
+            user32.OpenClipboard(0)
+            user32.GetClipboardData(1)
+            user32.CloseClipboard()
+
     def exiting(self) -> None:
 
         if_saved = []
@@ -60,5 +70,7 @@ class Editor(tk.Tk):
             )
             if reply or reply is None:
                 return
+
+        self.save_win_clipboard()
 
         sys.exit()
