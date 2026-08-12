@@ -42,7 +42,7 @@ class CustomNotebook(ttk.Notebook):
         )
 
         self.bind('<Button-1>', self._on_pressing_close)
-        self.bind('<B1-Motion>', self._move_selected_tab)
+        self.bind('<ButtonRelease-1>', self._move_selected_tab)
 
         self.bind('<<NotebookTabChanged>>', self.update_info_on_title)
 
@@ -57,9 +57,10 @@ class CustomNotebook(ttk.Notebook):
 
         # Use try-except to prevent the cursor from moving on nothing.
         try:
-            tab_index = self.index(f'@{event.x}, {event.y}')
+            if self.identify(event.x, event.y) != 'close':
+                tab_index = self.index(f'@{event.x}, {event.y}')
 
-            self.insert(tab_index, self.select())
+                self.insert(tab_index, self.get_tab()[0])
         except tk.TclError:
             pass
 
@@ -267,7 +268,6 @@ class TextPanel(tk.Text):
             return
 
         self.event_generate('<<Cut>>')
-
         self.master.line_number_bar.update_line_number()
 
     def paste(self):
@@ -276,7 +276,6 @@ class TextPanel(tk.Text):
             return
 
         self.event_generate('<<Paste>>')
-
         self.master.line_number_bar.update_line_number()
 
     def select_all(self):
@@ -292,7 +291,6 @@ class TextPanel(tk.Text):
             return
 
         self.event_generate('<<Undo>>')
-
         self.master.line_number_bar.update_line_number()
 
     def redo(self):
@@ -301,7 +299,6 @@ class TextPanel(tk.Text):
             return
 
         self.event_generate('<<Redo>>')
-
         self.master.line_number_bar.update_line_number()
 
     def _copy_file_path(self):
