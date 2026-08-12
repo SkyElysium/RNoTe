@@ -1,17 +1,13 @@
-from typing import Optional, Tuple
-
 import tkinter as tk
 import tkinter.ttk as ttk
 from tkinter import filedialog, messagebox
 
-from pathlib import Path
-
-from core.constants import *
-from core.line_number_bar import LineNumberBar
+from .config import get_settings, CUSTOM_X_SCROLLBAR_STYLE, CUSTOM_NOTEBOOK_STYLE
+from .line_number_bar import LineNumberBar
 
 
 class CustomNotebook(ttk.Notebook):
-    def __init__(self, master: 'Editor') -> None:
+    def __init__(self, master: 'Editor'):
 
         super().__init__(master)
 
@@ -48,38 +44,16 @@ class CustomNotebook(ttk.Notebook):
         self.bind('<Button-1>', self._on_pressing_close)
         self.bind('<B1-Motion>', self._move_selected_tab)
 
-        self.bind('<<NotebookTabChanged>>', self._update_info_on_title)
+        self.bind('<<NotebookTabChanged>>', self.update_info_on_title)
 
-    def _on_pressing_close(self, event: tk.Event) -> None:
+    def _on_pressing_close(self, event):
 
         if self.identify(event.x, event.y) == 'close':
             tab_id = f'@{event.x}, {event.y}'
 
             self.safely_close_file(tab_id = tab_id)
 
-    def safely_close_file(self, event: Optional[tk.Event] = None, tab_id: str = '') -> None:
-
-        if not self.tabs():
-            return
-
-        tab = self.tabs()[self.index(tab_id)] if tab_id else self.select()
-
-        if self.nametowidget(tab).text_panel.edit_modified():
-            reply = messagebox.askyesnocancel(
-                title = MAIN_WINDOW_TITLE,
-                message = '是否在关闭之前保存文件？'
-            )
-            if reply and self.save_file(file_path = self.nametowidget(tab).path) == 'NotSaved':
-                return
-            elif reply is None:
-                return
-
-        if self.nametowidget(tab).path:
-            self.master.main_menu.record_new_file(self.nametowidget(tab).path)
-
-        self.remove_tab(tab_id = tab_id)
-
-    def _move_selected_tab(self, event: tk.Event) -> None:
+    def _move_selected_tab(self, event):
 
         # Use try-except to prevent the cursor from moving on nothing.
         try:
@@ -89,9 +63,9 @@ class CustomNotebook(ttk.Notebook):
         except tk.TclError:
             pass
 
-    def _update_info_on_title(self, event: Optional[tk.Event] = None) -> None:
+    def update_info_on_title(self, event = None):
 
-        self.master.title(MAIN_WINDOW_TITLE)
+        self.master.title(get_settings('win_title'))
 
         if not self.tabs():
             return
@@ -99,9 +73,31 @@ class CustomNotebook(ttk.Notebook):
         _, text_tab = self.get_tab()
 
         if text_tab.path:
-            self.master.title(f'{MAIN_WINDOW_TITLE} - {text_tab.path}')
+            self.master.title(f'{get_settings("win_title")} - {text_tab.path}')
 
-    def add_tab(self, event: Optional[tk.Event] = None, tab_name: str = '未命名') -> 'TextTab':
+    def safely_close_file(self, event = None, tab_id = None):
+
+        if not self.tabs():
+            return
+
+        text_tab = self.get_tab()[1] if not tab_id else self.get_tab(tab_id)
+
+        if text_tab.text_panel.edit_modified():
+            reply = messagebox.askyesnocancel(
+                title = get_settings('win_title'),
+                message = '是否在关闭之前保存文件？'
+            )
+            if reply and self.master.save_file(file_path = text_tab.path) == 'NotSaved':
+                return
+            elif reply is None:
+                return
+
+        if text_tab.path:
+            self.master.main_menu.record_new_file(text_tab.path)
+
+        self.remove_tab(tab_id = tab_id)
+
+    def add_tab(self, event = None, tab_name = '未命名'):
 
         text_tab = TextTab(self)
         text_tab.label = tab_name
@@ -112,126 +108,41 @@ class CustomNotebook(ttk.Notebook):
 
         return text_tab
 
-    def remove_tab(self, event: Optional[tk.Event] = None, tab_id: str = '') -> None:
+    def remove_tab(self, event = None, tab_id = None):
 
-        # TabId for @x, y should be turned into ".!".
-        tab = self.tabs()[self.index(tab_id)] if tab_id else self.select()
+        text_tab = self.get_tab()[1] if not tab_id else self.get_tab(tab_id)
 
-        self.master.main_menu.font_size.trace_vdelete('w', self.nametowidget(tab).font_tracker)
+        self.master.main_menu.font_size.trace_vdelete('w', text_tab.font_tracker)
 
-        self.forget(tab)
-        self.nametowidget(tab).destroy()
+        self.forget(text_tab)
+        text_tab.destroy()
 
-        self._update_info_on_title()
+        self.update_info_on_title()
 
-    def get_tab(self) -> Tuple[str, 'TextTab']:
+    def get_tab(self, which = None):
 
-        tab = self.select()
-        text_tab = self.nametowidget(tab)
+        if not which:
+            tab = self.select()
+            text_tab = self.nametowidget(tab)
 
-        return tab, text_tab
-
-    def open_file(self, event: Optional[tk.Event] = None, file_path: str = '') -> None:
-
-        path = filedialog.askopenfilename(
-            title = f'打开',
-            filetypes = [('文本文档', '*.txt'), ('所有类型', '*.*')]
-        ) if not file_path else file_path
-
-        if not path:
-            return
-
-        try:
-            file = Path(path)
-
-            if not file.exists():
-                messagebox.showwarning(
-                    title = MAIN_WINDOW_TITLE,
-                    message = '打开的文件路径不存在'
-                )
-                return
-
-            text = file.read_text(encoding = 'utf-8')
-
-            text_tab = self.add_tab(tab_name = file.name)
-            text_tab.text_panel.insert('end', text)
-        except UnicodeDecodeError:
-            messagebox.showerror(
-                title = MAIN_WINDOW_TITLE,
-                message = '无法打开此文件，因为不是 UTF-8 格式，或者这是一个程序文件'
-            )
-
-            return
-
-        text_tab.path = path
-        text_tab.label = file.name
-
-        text_tab.text_panel.edit_modified(False)
-
-        text_tab.text_panel.mark_set('insert', '1.0')
-        text_tab.text_panel.focus_set()
-
-        text_tab.line_number_bar.update_line_number()
-
-    def save_file(self, event: Optional[tk.Event] = None, file_path: str = '') -> Optional[str]:
-
-        if not self.tabs():
-            return
-
-        _, text_tab = self.get_tab()
-
-        if file_path:
-            file = Path(file_path)
-        elif text_tab.path:
-            file = Path(text_tab.path)
+            return tab, text_tab
         else:
-            self.save_file_as()
+            # All ids will be transformed to normal ids because
+            # "nametowidget" doesn't accept the format: @x, y.
+            id = self.tabs()[self.index(which)]
+            text_tab = self.nametowidget(id)
 
-            return 'NotSaved' if not text_tab.path else None
-
-        text = text_tab.text_panel.get('1.0', 'end-1c')  # No self adding "new line".
-        file.write_text(text, encoding = 'utf-8')
-
-        text_tab.text_panel.edit_modified(False)
-
-    def save_file_as(self, event: Optional[tk.Event] = None) -> None:
-
-        if not self.tabs():
-            return
-
-        path = filedialog.asksaveasfilename(
-            title = '另存为...',
-            defaultextension = '.txt',
-            filetypes = [('文本文档', '*.txt'), ('所有类型', '*.*')]
-        )
-
-        if not path:
-            return
-
-        tab, text_tab = self.get_tab()
-
-        if text_tab.path:  # When the file has been, enter.
-            self.save_file(file_path = path)
-
-            return
-
-        text_tab.path = path
-        text_tab.label = Path(path).name
-
-        self.save_file()
-
-        self.tab(tab, text = text_tab.label)
-        self._update_info_on_title()
+            return text_tab
 
 
 class TextTab(tk.Frame):
-    def __init__(self, master: 'CustomNotebook') -> None:
+    def __init__(self, master: 'CustomNotebook'):
 
         super().__init__(master)
 
         # Tab Info
         self.path = ''
-        self.label = ''  # The label of tab
+        self.label = ''
 
         self.font_size = self.master.master.main_menu.font_size
         self.font_tracker = self.font_size.trace('w', self._change_font_size)
@@ -260,24 +171,24 @@ class TextTab(tk.Frame):
 
         self.line_number_bar.update_line_number()
 
-    def delay_to_update_line_number(self, event: tk.Event) -> None:
+    def delay_to_update_line_number(self, event):
 
         # The timer prevents from being called before executing "enter".
         self.after(1, self.line_number_bar.update_line_number)
 
-    def delay_to_highlight(self, event: tk.Event = None) -> None:
+    def delay_to_highlight(self, event = None):
 
         # The timer prevents from being called before executing "click".
         self.after(1, self.line_number_bar.update_highlight_current_line)
 
-    def _change_font_size(self, *args) -> None:
+    def _change_font_size(self, *args):
 
         self.line_number_bar.config(font = ('Consolas', self.font_size.get()))
         self.text_panel.config(font = ('Consolas', self.font_size.get()))
 
 
 class TextPanel(tk.Text):
-    def __init__(self, master: 'TextTab', font_size: tk.IntVar) -> None:
+    def __init__(self, master: 'TextTab', font_size):
 
         super().__init__(master)
 
@@ -309,17 +220,17 @@ class TextPanel(tk.Text):
 
         self._right_click_menu()
 
-    def _right_click_menu(self) -> None:
+    def _right_click_menu(self):
 
         self.menu = tk.Menu(self, tearoff = False, activeforeground = 'black', activebackground = '#91c9f7')
 
-        self.menu.add_command(label = COPY, accelerator = 'Ctrl+C', command = self.copy)
-        self.menu.add_command(label = CUT, accelerator = 'Ctrl+X', command = self.cut)
-        self.menu.add_command(label = PASTE, accelerator = 'Ctrl+V', command = self.paste)
+        self.menu.add_command(label = get_settings('copy'), accelerator = 'Ctrl+C', command = self.copy)
+        self.menu.add_command(label = get_settings('cut'), accelerator = 'Ctrl+X', command = self.cut)
+        self.menu.add_command(label = get_settings('paste'), accelerator = 'Ctrl+V', command = self.paste)
         self.menu.add_separator()
-        self.menu.add_command(label = COPY_PRESENT_PATH, command = self._copy_file_path)
+        self.menu.add_command(label = get_settings('copy_present_path'), command = self._copy_file_path)
 
-    def _popup_menu(self, event: tk.Event) -> None:
+    def _popup_menu(self, event):
 
         self.focus_set()
         self.mark_set('insert', f'@{event.x}, {event.y}')
@@ -330,27 +241,27 @@ class TextPanel(tk.Text):
 
         self.menu.post(event.x_root, event.y_root)
 
-    def _check_status_of_options(self) -> None:
+    def _check_status_of_options(self):
 
         if self.master.path:
-            self.menu.entryconfig(COPY_PRESENT_PATH, state = 'normal')
+            self.menu.entryconfig(get_settings('copy_present_path'), state = 'normal')
         else:
-            self.menu.entryconfig(COPY_PRESENT_PATH, state = 'disabled')
+            self.menu.entryconfig(get_settings('copy_present_path'), state = 'disabled')
 
         try:
             self.master.master.master.clipboard_get()
-            self.menu.entryconfig(PASTE, state = 'normal')
+            self.menu.entryconfig(get_settings('paste'), state = 'normal')
         except tk.TclError:
-            self.menu.entryconfig(PASTE, state = 'disabled')
+            self.menu.entryconfig(get_settings('paste'), state = 'disabled')
 
-    def copy(self) -> None:
+    def copy(self):
 
         if not self.master.master.tabs():
             return
 
         self.event_generate('<<Copy>>')
 
-    def cut(self) -> None:
+    def cut(self):
 
         if not self.master.master.tabs():
             return
@@ -359,7 +270,7 @@ class TextPanel(tk.Text):
 
         self.master.line_number_bar.update_line_number()
 
-    def paste(self) -> None:
+    def paste(self):
 
         if not self.master.master.tabs():
             return
@@ -368,14 +279,14 @@ class TextPanel(tk.Text):
 
         self.master.line_number_bar.update_line_number()
 
-    def select_all(self) -> None:
+    def select_all(self):
 
         if not self.master.master.tabs():
             return
 
         self.event_generate('<<SelectAll>>')
 
-    def undo(self) -> None:
+    def undo(self):
 
         if not self.master.master.tabs():
             return
@@ -384,32 +295,32 @@ class TextPanel(tk.Text):
 
         self.master.line_number_bar.update_line_number()
 
-    def redo(self) -> None:
+    def redo(self):
 
         if not self.master.master.tabs():
             return
 
-        self.text_panel.event_generate('<<Redo>>')
+        self.event_generate('<<Redo>>')
 
-        self.line_number_bar.update_line_number()
+        self.master.line_number_bar.update_line_number()
 
-    def _copy_file_path(self) -> None:
+    def _copy_file_path(self):
 
         self.master.master.master.clipboard_clear()
         self.master.master.master.clipboard_append(self.master.path)
 
-    def _b2_motion(self, event: tk.Event) -> str:
+    def _b2_motion(self, event):
 
         return 'break'
 
-    def _ctrl_o(self, event: tk.Event) -> str:
+    def _ctrl_o(self, event):
 
         # Tkinter has bound ctrl+o inside "Text".
-        self.master.master.open_file()
+        self.master.master.master.open_file()
 
         return 'break'
 
-    def _is_out_of_text(self, upper, lower) -> None:
+    def _is_out_of_text(self, upper, lower):
 
         if self.xview() != (0.0, 1.0):
             self.master.x_scrollbar.lift(self)
@@ -418,7 +329,7 @@ class TextPanel(tk.Text):
 
         self.master.x_scrollbar.set(upper, lower)
 
-    def _text_is_changed(self, event: tk.Event) -> None:
+    def _text_is_changed(self, event):
 
         if self.edit_modified():
             self.master.master.tab(self.master.master.get_tab()[0], text = f'*{self.master.label}')

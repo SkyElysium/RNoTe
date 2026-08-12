@@ -2,7 +2,7 @@ import tkinter as tk
 
 
 class LineNumberBar(tk.Text):
-    def __init__(self, master: 'TextTab', font_size: tk.IntVar) -> None:
+    def __init__(self, master: 'TextTab', font_size):
 
         super().__init__(master)
 
@@ -26,26 +26,26 @@ class LineNumberBar(tk.Text):
 
         self.bind('<MouseWheel>', self.wheel)
 
-    def _not_respond_to_cursor(self, event: tk.Event) -> str:
+    def _not_respond_to_cursor(self, event):
 
         return 'break'
 
-    def scroll(self, *xy: tuple) -> None:
+    def scroll(self, *xy):
 
         self.master.text_panel.yview(*xy)
         self.yview(*xy)
 
-    def scroll_when_selecting(self, event: tk.Event) -> None:
+    def scroll_when_selecting(self, event):
 
         self.yview_moveto(self.master.text_panel.yview()[0])
 
         self.update_highlight_current_line()
 
-    def scroll_when_searching(self) -> None:
+    def scroll_when_searching(self):
 
         self.yview_moveto(self.master.text_panel.yview()[0])
 
-    def wheel(self, event: tk.Event) -> None:
+    def wheel(self, event):
 
         speed = int(-1 * (event.delta / 60))
 
@@ -54,7 +54,7 @@ class LineNumberBar(tk.Text):
 
         return 'break'
 
-    def update_line_number(self) -> None:
+    def update_line_number(self):
 
         line_num = self.master.text_panel.index('end').split('.')[0]
 
@@ -78,7 +78,7 @@ class LineNumberBar(tk.Text):
 
         self.update_highlight_current_line()
 
-    def update_highlight_current_line(self, event: tk.Event = None) -> None:
+    def update_highlight_current_line(self, event = None):
 
         self.tag_remove('current_line', '1.0', 'end')
 

@@ -1,13 +1,9 @@
-from typing import Optional
-
 import tkinter as tk
 import tkinter.ttk as ttk
 
-from core.constants import *
-
 
 class Dialog(tk.Toplevel):
-    def __init__(self, master: Optional[tk.Misc]) -> None:
+    def __init__(self, master):
 
         super().__init__(master)
 
@@ -18,7 +14,7 @@ class Dialog(tk.Toplevel):
 
         self.focus()
 
-    def set_dialog(self, dialog_title: str, dialog_size: str) -> None:
+    def set_dialog(self, dialog_title, dialog_size):
 
         win_x = self.master.winfo_x()
         win_y = self.master.winfo_y()
@@ -37,20 +33,20 @@ class Dialog(tk.Toplevel):
 
 class FindDialog(Dialog):
 
-    _DIALOG_TITLE = '查找'
-    _DIALOG_SIZE = '330x30'
+    DIALOG_TITLE = '查找'
+    DIALOG_SIZE = '330x30'
 
     instance = None
     is_alive = False
 
-    def __new__(cls, *args) -> object:
+    def __new__(cls, *args):
 
         if cls.instance is None:
             cls.instance = object.__new__(cls)
 
         return cls.instance
 
-    def __init__(self, master: Optional[tk.Misc]) -> None:
+    def __init__(self, master):
 
         if FindDialog.is_alive:
             FindDialog.instance.focus()
@@ -61,7 +57,7 @@ class FindDialog(Dialog):
 
         super().__init__(master)
 
-        self.set_dialog(self._DIALOG_TITLE, self._DIALOG_SIZE)
+        self.set_dialog(self.DIALOG_TITLE, self.DIALOG_SIZE)
 
         self.word_indexes = []
         self.current = -1
@@ -74,7 +70,7 @@ class FindDialog(Dialog):
 
         self._interface()
 
-    def _interface(self) -> None:
+    def _interface(self):
 
         self.regexp_toggle = ttk.Button(
             self,
@@ -114,7 +110,7 @@ class FindDialog(Dialog):
         )
         self.search_down_button.place(x = 285, y = 1)
 
-    def _change_status_of_regexp(self) -> None:
+    def _change_status_of_regexp(self):
 
         if not self.is_regexp_on:
             self.is_regexp_on = True
@@ -123,7 +119,7 @@ class FindDialog(Dialog):
             self.is_regexp_on = False
             self.regexp_toggle.config(text = '.*')
 
-    def _search_for_words(self, event: tk.Event) -> None:
+    def _search_for_words(self, event):
 
         if not self.master.custom_notebook.tabs():
             return
@@ -164,7 +160,7 @@ class FindDialog(Dialog):
 
         self.present_pos.set(f'0/{len(self.word_indexes)}')
 
-    def _search_up(self) -> None:
+    def _search_up(self):
 
         if self.current >= 0:
             if self.current != 0:
@@ -172,7 +168,7 @@ class FindDialog(Dialog):
 
             self._dump_to_word()
 
-    def _search_down(self) -> None:
+    def _search_down(self):
 
         if len(self.word_indexes) - 1 >= self.current:
             if len(self.word_indexes) - 1 != self.current:
@@ -180,7 +176,7 @@ class FindDialog(Dialog):
 
             self._dump_to_word()
 
-    def _dump_to_word(self) -> None:
+    def _dump_to_word(self):
 
         _, tab = self.master.custom_notebook.get_tab()
 
@@ -192,7 +188,7 @@ class FindDialog(Dialog):
 
         self.present_pos.set(f'{self.current + 1}/{len(self.word_indexes)}')
 
-    def _focus_out_of_dialog(self, event: tk.Event) -> None:
+    def _focus_out_of_dialog(self, event):
 
         self.search_up_button.config(state = 'disabled')
         self.search_down_button.config(state = 'disabled')
@@ -205,7 +201,7 @@ class FindDialog(Dialog):
             tab.text_panel.tag_remove('searched', '1.0', 'end')
             tab.text_panel.tag_remove('selected', '1.0', 'end')
 
-    def _exiting(self, event: tk.Event) -> None:
+    def _exiting(self, event):
 
         if self.master.custom_notebook.tabs():
             _, tab = self.master.custom_notebook.get_tab()
@@ -216,34 +212,41 @@ class FindDialog(Dialog):
         FindDialog.is_alive = False
         FindDialog.instance = None
 
-def show_find_dialog(master: Optional[tk.Misc] = None) -> None:
+def show_find_dialog(master = None):
 
     FindDialog(master)
 
 
+REPO_URL = 'https://github.com/SkyElysium/RNoTe'
+COPYRIGHT = '''
+
+MIT License
+Copyright (c) 2025 SkyElysium
+'''
+
 class AboutDialog(Dialog):
 
-    _DIALOG_TITLE = '关于'
-    _DIALOG_SIZE  = '350x120'
+    DIALOG_TITLE = '关于'
+    DIALOG_SIZE  = '350x120'
 
-    def __init__(self, master: Optional[tk.Misc]) -> None:
+    def __init__(self, master):
 
         super().__init__(master)
 
-        self.set_dialog(self._DIALOG_TITLE, self._DIALOG_SIZE)
+        self.set_dialog(self.DIALOG_TITLE, self.DIALOG_SIZE)
 
         self.master.wm_attributes('-disabled', True)
         self.bind('<Destroy>', lambda event: self.master.wm_attributes('-disabled', False))
 
         self._interface()
 
-    def _interface(self) -> None:
+    def _interface(self):
 
-        tk.Label(self, text = MAIN_WINDOW_TITLE, font = ('Consolas', 15)).pack()
+        tk.Label(self, text = 'RNoTe', font = ('Consolas', 15)).pack()
 
         tk.Message(self, text = REPO_URL, width = 600, fg = 'blue').pack()
         tk.Message(self, text = COPYRIGHT, width = 600, justify = 'center').pack()
 
-def show_about_dialog(master: Optional[tk.Misc] = None) -> None:
+def show_about_dialog(master = None):
 
     AboutDialog(master)
