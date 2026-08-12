@@ -4,7 +4,7 @@ from pathlib import Path
 import tkinter as tk
 from tkinter import messagebox, filedialog
 
-from .config import get_settings
+from .config import get_settings, get_path
 from .main_menu import MainMenu
 from .custom_notebook import CustomNotebook
 
@@ -17,7 +17,7 @@ class Editor(tk.Tk):
         self.title(get_settings('win_title'))
         self.geometry(get_settings('win_size'))
 
-        self.iconphoto(True, tk.PhotoImage(file = 'data/icon.png'))
+        self.iconphoto(True, tk.PhotoImage(file = get_path('win_icon')))
 
         self.custom_notebook = CustomNotebook(self)
         self.custom_notebook.pack(fill = 'both', expand = True)
@@ -28,14 +28,14 @@ class Editor(tk.Tk):
         self.custom_notebook.add_tab()
 
         bindings = {
-            ('<Control-n>', '<Control-N>')         : self.custom_notebook.add_tab,
-            ('<Control-o>', '<Control-O>')         : self.open_file,
-            ('<Control-s>', '<Control-S>')         : self.save_file,
-            ('<Control-Alt-s>', '<Control-Alt-S>') : self.save_file_as,
-            ('<Control-F4>',)                      : self.custom_notebook.safely_close_file,
-            ('<Control-f>', '<Control-F>')         : self.main_menu.popup_find_dialog,
-            ('<Control-plus>',)                    : self.main_menu.zoom_in_font,
-            ('<Control-minus>',)                   : self.main_menu.zoom_out_font
+            ('<Control-n>', '<Control-N>')        : self.custom_notebook.add_tab,
+            ('<Control-o>', '<Control-O>')        : self.open_file,
+            ('<Control-s>', '<Control-S>')        : self.save_file,
+            ('<Control-Alt-s>', '<Control-Alt-S>'): self.save_file_as,
+            ('<Control-F4>',)                     : self.custom_notebook.safely_close_file,
+            ('<Control-f>', '<Control-F>')        : self.main_menu.popup_find_dialog,
+            ('<Control-plus>',)                   : self.main_menu.zoom_in_font,
+            ('<Control-minus>',)                  : self.main_menu.zoom_out_font
         }
 
         for shortcuts, method in bindings.items():

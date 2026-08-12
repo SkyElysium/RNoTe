@@ -2,7 +2,12 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from tkinter import filedialog, messagebox
 
-from .config import get_settings, CUSTOM_X_SCROLLBAR_STYLE, CUSTOM_NOTEBOOK_STYLE
+from .config import (
+    get_settings,
+    get_path,
+    CUSTOM_X_SCROLLBAR_STYLE,
+    CUSTOM_NOTEBOOK_STYLE
+)
 from .line_number_bar import LineNumberBar
 
 
@@ -12,7 +17,7 @@ class CustomNotebook(ttk.Notebook):
         super().__init__(master)
 
         # Create the "close" button.
-        self.close_image = tk.PhotoImage(file = 'data/close.png')
+        self.close_image = tk.PhotoImage(file = get_path('tab_x'))
 
         self.custom_style = ttk.Style()
 
