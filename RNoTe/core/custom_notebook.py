@@ -334,6 +334,6 @@ class TextPanel(tk.Text):
     def _text_is_changed(self, event):
 
         if self.edit_modified():
-            self.master.master.tab(self.master.master.get_tab()[0], text = f'*{self.master.label}')
+            self.master.master.tab(self.master, text = f'*{self.master.label}')
         else:
-            self.master.master.tab(self.master.master.get_tab()[0], text = self.master.label)
+            self.master.master.tab(self.master, text = self.master.label)
