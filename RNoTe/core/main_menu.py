@@ -3,7 +3,7 @@ import tkinter.ttk as ttk
 
 import webbrowser
 
-from .config import get_settings
+from .config import get_settings, get_path
 from .dialogs import show_about_dialog, show_find_dialog
 
 
@@ -205,7 +205,7 @@ class MainMenu(tk.Menu):
     def _get_file_list(self):
 
         try:
-            with open('data/config/recent_files.txt', 'r', encoding = 'utf-8') as f:
+            with open(get_path('file_history'), 'r', encoding = 'utf-8') as f:
                 paths = f.read().splitlines()
 
                 if not paths:
@@ -231,7 +231,7 @@ class MainMenu(tk.Menu):
 
     def record_new_file(self, file_path):
 
-        with open('data/config/recent_files.txt', 'a+', encoding = 'utf-8') as f:
+        with open(get_path('file_history'), 'a+', encoding = 'utf-8') as f:
             f.seek(0)
             paths = f.readlines()
 
@@ -251,7 +251,7 @@ class MainMenu(tk.Menu):
 
     def _clean_records(self):
 
-        with open('data/config/recent_files.txt', 'w', encoding = 'utf-8') as f:
+        with open(get_path('file_history'), 'w', encoding = 'utf-8') as f:
             f.truncate(0)
 
     def _get_tab_list(self):

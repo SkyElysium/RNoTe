@@ -71,15 +71,17 @@ class CustomNotebook(ttk.Notebook):
 
     def update_info_on_title(self, event = None):
 
-        self.master.title(get_settings('win_title'))
-
         if not self.tabs():
+            self.master.title(get_settings('win_title'))
+
             return
 
         _, text_tab = self.get_tab()
 
         if text_tab.path:
             self.master.title(f'{get_settings("win_title")} - {text_tab.path}')
+        else:
+            self.master.title(get_settings('win_title'))
 
     def safely_close_file(self, event = None, tab_id = None):
 
@@ -122,8 +124,6 @@ class CustomNotebook(ttk.Notebook):
 
         self.forget(text_tab)
         text_tab.destroy()
-
-        self.update_info_on_title()
 
     def get_tab(self, which = None):
 

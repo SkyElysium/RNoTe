@@ -43,14 +43,16 @@ def get_settings(*names):
 ICON_RELATIVE_PATHS = {
     'win_icon': 'data/icon.png',
 
-    'tab_x': 'data/close.png'
+    'tab_x': 'data/close.png',
+
+    'file_history': 'data/config/recent_files.txt'
 }
 
 def get_path(name):
 
     if hasattr(sys, '_MEIPASS'):
-        # On Windows, run from the program icon menu on the
-        # task bar will cause wrong paths. (Pyinstaller)
+        # On Windows, running from the program icon menu on
+        # the task bar will cause wrong paths. (Pyinstaller)
         return os.path.join(sys._MEIPASS, '..', ICON_RELATIVE_PATHS[name])
     return ICON_RELATIVE_PATHS[name]
 
