@@ -134,7 +134,7 @@ class CustomNotebook(ttk.Notebook):
 
             return tab, text_tab
         else:
-            # All ids will be transformed to normal ids because
+            # All ids will be transformed to numeric ids because
             # "nametowidget" doesn't accept the format: @x, y.
             id = self.tabs()[self.index(which)]
             text_tab = self.nametowidget(id)
@@ -154,7 +154,7 @@ class TextTab(tk.Frame):
         self.path = ''
         self.label = ''
 
-        self.font_tracker = self.font_size.trace('w', self._change_font_size)
+        self.font_trace_id = self.font_size.trace('w', self._change_font_size)
 
         # Interface
         self.grid_columnconfigure(1, weight = 1)
@@ -197,7 +197,7 @@ class TextTab(tk.Frame):
 
     def destroy(self):
 
-        self.font_size.trace_vdelete('w', self.font_tracker)
+        self.font_size.trace_vdelete('w', self.font_trace_id)
         super().destroy()
 
 
