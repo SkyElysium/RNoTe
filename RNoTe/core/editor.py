@@ -54,6 +54,12 @@ class Editor(tk.Tk):
         if not path:
             return
 
+        for tab_id in self.custom_notebook.tabs():
+            text_tab = self.custom_notebook.get_tab(tab_id)
+
+            if path == text_tab.path:
+                return
+
         try:
             file = Path(path)
 
