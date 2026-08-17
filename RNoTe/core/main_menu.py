@@ -11,10 +11,8 @@ class MainMenu(tk.Menu):
     def __init__(self, master: 'Editor'):
 
         super().__init__(master)
-
         self.editor = master
-
-        self.font_size = tk.IntVar(self, 13)
+        self.font_size = master.custom_notebook.font_size
 
         self['postcommand'] = self._change_status_of_options
 

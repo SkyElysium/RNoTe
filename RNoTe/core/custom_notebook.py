@@ -17,6 +17,8 @@ class CustomNotebook(ttk.Notebook):
         super().__init__(master)
         self.editor = master
 
+        self.font_size = tk.IntVar(self, 13)
+
         # Create the "close" button.
         self.close_image = tk.PhotoImage(file = get_path('tab_x'))
 
@@ -146,12 +148,12 @@ class TextTab(tk.Frame):
         super().__init__(master)
         self.editor = master.editor
         self.notebook = master
+        self.font_size = master.font_size
 
         # Tab Info
         self.path = ''
         self.label = ''
 
-        self.font_size = self.editor.main_menu.font_size
         self.font_tracker = self.font_size.trace('w', self._change_font_size)
 
         # Interface
