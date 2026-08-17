@@ -89,8 +89,13 @@ class FindDialog(Dialog):
 
         self.search_entry.bind('<Return>', self._search_for_words)
 
-        self.present_pos_label = tk.Label(self, textvariable = self.present_pos)
-        self.present_pos_label.place(x = 215, y = 3)
+        self.present_pos_label = ttk.Entry(
+            self,
+            textvariable = self.present_pos,
+            width = 6,
+            state = 'readonly'
+        )
+        self.present_pos_label.place(x = 205, y = 3)
 
         self.search_up_button = ttk.Button(
             self,
@@ -120,6 +125,10 @@ class FindDialog(Dialog):
         else:
             self.is_regexp_on = False
             self.regexp_toggle.config(text = '.*')
+
+    def _not_delete(self, event):
+
+        return 'break'
 
     def _search_for_words(self, event):
 
@@ -191,6 +200,11 @@ class FindDialog(Dialog):
         self.present_pos.set(f'{self.current + 1}/{len(self.word_indexes)}')
 
     def _focus_out_of_dialog(self, event):
+
+        if self.focus_get() is not None:
+            # FocusOut will also be called when not
+            # focusing out of the present window.
+            return
 
         self.search_up_button.config(state = 'disabled')
         self.search_down_button.config(state = 'disabled')
