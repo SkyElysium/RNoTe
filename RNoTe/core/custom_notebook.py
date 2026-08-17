@@ -15,6 +15,7 @@ class CustomNotebook(ttk.Notebook):
     def __init__(self, master: 'Editor'):
 
         super().__init__(master)
+        self.editor = master
 
         # Create the "close" button.
         self.close_image = tk.PhotoImage(file = get_path('tab_x'))
@@ -72,16 +73,16 @@ class CustomNotebook(ttk.Notebook):
     def update_info_on_title(self, event = None):
 
         if not self.tabs():
-            self.master.title(get_settings('win_title'))
+            self.editor.title(get_settings('win_title'))
 
             return
 
         _, text_tab = self.get_tab()
 
         if text_tab.path:
-            self.master.title(f'{get_settings("win_title")} - {text_tab.path}')
+            self.editor.title(f'{get_settings("win_title")} - {text_tab.path}')
         else:
-            self.master.title(get_settings('win_title'))
+            self.editor.title(get_settings('win_title'))
 
     def safely_close_file(self, event = None, tab_id = None):
 
@@ -95,13 +96,13 @@ class CustomNotebook(ttk.Notebook):
                 title = get_settings('win_title'),
                 message = '是否在关闭之前保存文件？'
             )
-            if reply and self.master.save_file(file_path = text_tab.path) == 'NotSaved':
+            if reply and self.editor.save_file(file_path = text_tab.path) == 'NotSaved':
                 return
             elif reply is None:
                 return
 
         if text_tab.path:
-            self.master.main_menu.record_new_file(text_tab.path)
+            self.editor.main_menu.record_new_file(text_tab.path)
 
         self.remove_tab(tab_id = tab_id)
 
@@ -119,8 +120,6 @@ class CustomNotebook(ttk.Notebook):
     def remove_tab(self, event = None, tab_id = None):
 
         text_tab = self.get_tab()[1] if not tab_id else self.get_tab(tab_id)
-
-        self.master.main_menu.font_size.trace_vdelete('w', text_tab.font_tracker)
 
         self.forget(text_tab)
         text_tab.destroy()
@@ -145,22 +144,24 @@ class TextTab(tk.Frame):
     def __init__(self, master: 'CustomNotebook'):
 
         super().__init__(master)
+        self.editor = master.editor
+        self.notebook = master
 
         # Tab Info
         self.path = ''
         self.label = ''
 
-        self.font_size = self.master.master.main_menu.font_size
+        self.font_size = self.editor.main_menu.font_size
         self.font_tracker = self.font_size.trace('w', self._change_font_size)
 
         # Interface
         self.grid_columnconfigure(1, weight = 1)
         self.grid_rowconfigure(0, weight = 1)
 
-        self.line_number_bar = LineNumberBar(self, self.font_size)
+        self.line_number_bar = LineNumberBar(self)
         self.line_number_bar.grid(row = 0, column = 0, rowspan = 2, sticky = 'ns')
 
-        self.text_panel = TextPanel(self, self.font_size)
+        self.text_panel = TextPanel(self)
         self.text_panel.grid(row = 0, column = 1, sticky = 'nsew')
 
         self.scrollbar = tk.Scrollbar(self)
@@ -192,17 +193,26 @@ class TextTab(tk.Frame):
         self.line_number_bar.config(font = ('Consolas', self.font_size.get()))
         self.text_panel.config(font = ('Consolas', self.font_size.get()))
 
+    def destroy(self):
+
+        self.font_size.trace_vdelete('w', self.font_tracker)
+        super().destroy()
+
 
 class TextPanel(tk.Text):
-    def __init__(self, master: 'TextTab', font_size):
+    def __init__(self, master: 'TextTab'):
 
         super().__init__(master)
+        self.editor = master.editor
+        self.notebook = master.notebook
+        self.tab = master
+        self.font_size = master.font_size
 
         self.config(
             wrap = 'none',
             undo = True,
             bd = 0,
-            font = ('Consolas', font_size.get()),
+            font = ('Consolas', self.font_size.get()),
             selectbackground = '#d3e9fc',
             selectforeground = 'black'
         )
@@ -215,14 +225,14 @@ class TextPanel(tk.Text):
         self.bind('<<Modified>>', self._text_is_changed)
 
         # For highlighting the current line
-        self.bind('<Button-1>', self.master.delay_to_highlight)
+        self.bind('<Button-1>', self.tab.delay_to_highlight)
 
         # For the line number bar
         self.bind('<B2-Motion>', self._b2_motion)
-        self.bind('<<Selection>>', self.master.line_number_bar.scroll_when_selecting)
-        self.bind('<Any-KeyPress>', self.master.delay_to_update_line_number)
+        self.bind('<<Selection>>', self.tab.line_number_bar.scroll_when_selecting)
+        self.bind('<Any-KeyPress>', self.tab.delay_to_update_line_number)
 
-        self.bind('<MouseWheel>', self.master.line_number_bar.wheel)
+        self.bind('<MouseWheel>', self.tab.line_number_bar.wheel)
 
         self._right_click_menu()
 
@@ -241,7 +251,7 @@ class TextPanel(tk.Text):
         self.focus_set()
         self.mark_set('insert', f'@{event.x}, {event.y}')
 
-        self.master.delay_to_highlight()
+        self.tab.delay_to_highlight()
 
         self._check_status_of_options()
 
@@ -249,67 +259,67 @@ class TextPanel(tk.Text):
 
     def _check_status_of_options(self):
 
-        if self.master.path:
+        if self.tab.path:
             self.menu.entryconfig(get_settings('copy_present_path'), state = 'normal')
         else:
             self.menu.entryconfig(get_settings('copy_present_path'), state = 'disabled')
 
         try:
-            self.master.master.master.clipboard_get()
+            self.editor.clipboard_get()
             self.menu.entryconfig(get_settings('paste'), state = 'normal')
         except tk.TclError:
             self.menu.entryconfig(get_settings('paste'), state = 'disabled')
 
     def copy(self):
 
-        if not self.master.master.tabs():
+        if not self.notebook.tabs():
             return
 
         self.event_generate('<<Copy>>')
 
     def cut(self):
 
-        if not self.master.master.tabs():
+        if not self.notebook.tabs():
             return
 
         self.event_generate('<<Cut>>')
-        self.master.line_number_bar.update_line_number()
+        self.tab.line_number_bar.update_line_number()
 
     def paste(self):
 
-        if not self.master.master.tabs():
+        if not self.notebook.tabs():
             return
 
         self.event_generate('<<Paste>>')
-        self.master.line_number_bar.update_line_number()
+        self.tab.line_number_bar.update_line_number()
 
     def select_all(self):
 
-        if not self.master.master.tabs():
+        if not self.notebook.tabs():
             return
 
         self.event_generate('<<SelectAll>>')
 
     def undo(self):
 
-        if not self.master.master.tabs():
+        if not self.notebook.tabs():
             return
 
         self.event_generate('<<Undo>>')
-        self.master.line_number_bar.update_line_number()
+        self.tab.line_number_bar.update_line_number()
 
     def redo(self):
 
-        if not self.master.master.tabs():
+        if not self.notebook.tabs():
             return
 
         self.event_generate('<<Redo>>')
-        self.master.line_number_bar.update_line_number()
+        self.tab.line_number_bar.update_line_number()
 
     def _copy_file_path(self):
 
-        self.master.master.master.clipboard_clear()
-        self.master.master.master.clipboard_append(self.master.path)
+        self.editor.clipboard_clear()
+        self.editor.clipboard_append(self.tab.path)
 
     def _b2_motion(self, event):
 
@@ -318,22 +328,22 @@ class TextPanel(tk.Text):
     def _ctrl_o(self, event):
 
         # Tkinter has bound ctrl+o inside "Text".
-        self.master.master.master.open_file()
+        self.editor.open_file()
 
         return 'break'
 
     def _is_out_of_text(self, upper, lower):
 
         if self.xview() != (0.0, 1.0):
-            self.master.x_scrollbar.lift(self)
+            self.tab.x_scrollbar.lift(self)
         else:
-            self.master.x_scrollbar.lower(self)
+            self.tab.x_scrollbar.lower(self)
 
-        self.master.x_scrollbar.set(upper, lower)
+        self.tab.x_scrollbar.set(upper, lower)
 
     def _text_is_changed(self, event):
 
         if self.edit_modified():
-            self.master.master.tab(self.master, text = f'*{self.master.label}')
+            self.notebook.tab(self.tab, text = f'*{self.tab.label}')
         else:
-            self.master.master.tab(self.master, text = self.master.label)
+            self.notebook.tab(self.tab, text = self.tab.label)

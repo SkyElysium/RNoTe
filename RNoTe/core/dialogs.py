@@ -3,9 +3,10 @@ import tkinter.ttk as ttk
 
 
 class Dialog(tk.Toplevel):
-    def __init__(self, master):
+    def __init__(self):
 
-        super().__init__(master)
+        super().__init__()
+        self.editor = self.master
 
         self.transient(self.master)
 
@@ -16,11 +17,11 @@ class Dialog(tk.Toplevel):
 
     def set_dialog(self, dialog_title, dialog_size):
 
-        win_x = self.master.winfo_x()
-        win_y = self.master.winfo_y()
+        win_x = self.editor.winfo_x()
+        win_y = self.editor.winfo_y()
 
-        win_width = self.master.winfo_width()
-        win_height = self.master.winfo_height()
+        win_width = self.editor.winfo_width()
+        win_height = self.editor.winfo_height()
 
         width, height = dialog_size.split('x')
 
@@ -46,7 +47,7 @@ class FindDialog(Dialog):
 
         return cls.instance
 
-    def __init__(self, master):
+    def __init__(self):
 
         if FindDialog.is_alive:
             FindDialog.instance.focus()
@@ -55,7 +56,8 @@ class FindDialog(Dialog):
 
         FindDialog.is_alive = True
 
-        super().__init__(master)
+        super().__init__()
+        self.editor = self.master
 
         self.set_dialog(self.DIALOG_TITLE, self.DIALOG_SIZE)
 
@@ -121,10 +123,10 @@ class FindDialog(Dialog):
 
     def _search_for_words(self, event):
 
-        if not self.master.custom_notebook.tabs():
+        if not self.editor.custom_notebook.tabs():
             return
 
-        _, tab = self.master.custom_notebook.get_tab()
+        _, tab = self.editor.custom_notebook.get_tab()
 
         tab.text_panel.tag_remove('searched', '1.0', 'end')
         tab.text_panel.tag_remove('selected', '1.0', 'end')
@@ -178,7 +180,7 @@ class FindDialog(Dialog):
 
     def _dump_to_word(self):
 
-        _, tab = self.master.custom_notebook.get_tab()
+        _, tab = self.editor.custom_notebook.get_tab()
 
         tab.text_panel.see(self.word_indexes[self.current][0])
         tab.line_number_bar.scroll_when_searching()
@@ -195,16 +197,16 @@ class FindDialog(Dialog):
 
         self.present_pos.set('0/0')
 
-        if self.master.custom_notebook.tabs():
-            _, tab = self.master.custom_notebook.get_tab()
+        if self.editor.custom_notebook.tabs():
+            _, tab = self.editor.custom_notebook.get_tab()
 
             tab.text_panel.tag_remove('searched', '1.0', 'end')
             tab.text_panel.tag_remove('selected', '1.0', 'end')
 
     def _exiting(self, event):
 
-        if self.master.custom_notebook.tabs():
-            _, tab = self.master.custom_notebook.get_tab()
+        if self.editor.custom_notebook.tabs():
+            _, tab = self.editor.custom_notebook.get_tab()
 
             tab.text_panel.tag_remove('searched', '1.0', 'end')
             tab.text_panel.tag_remove('selected', '1.0', 'end')
@@ -212,9 +214,9 @@ class FindDialog(Dialog):
         FindDialog.is_alive = False
         FindDialog.instance = None
 
-def show_find_dialog(master = None):
+def show_find_dialog():
 
-    FindDialog(master)
+    FindDialog()
 
 
 REPO_URL = 'https://github.com/SkyElysium/RNoTe'
@@ -229,14 +231,15 @@ class AboutDialog(Dialog):
     DIALOG_TITLE = '关于'
     DIALOG_SIZE  = '350x120'
 
-    def __init__(self, master):
+    def __init__(self):
 
-        super().__init__(master)
+        super().__init__()
+        self.editor = self.master
 
         self.set_dialog(self.DIALOG_TITLE, self.DIALOG_SIZE)
 
-        self.master.wm_attributes('-disabled', True)
-        self.bind('<Destroy>', lambda event: self.master.wm_attributes('-disabled', False))
+        self.editor.wm_attributes('-disabled', True)
+        self.bind('<Destroy>', lambda event: self.editor.wm_attributes('-disabled', False))
 
         self._interface()
 
@@ -247,6 +250,6 @@ class AboutDialog(Dialog):
         tk.Message(self, text = REPO_URL, width = 600, fg = 'blue').pack()
         tk.Message(self, text = COPYRIGHT, width = 600, justify = 'center').pack()
 
-def show_about_dialog(master = None):
+def show_about_dialog():
 
-    AboutDialog(master)
+    AboutDialog()

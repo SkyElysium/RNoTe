@@ -12,6 +12,8 @@ class MainMenu(tk.Menu):
 
         super().__init__(master)
 
+        self.editor = master
+
         self.font_size = tk.IntVar(self, 13)
 
         self['postcommand'] = self._change_status_of_options
@@ -32,23 +34,23 @@ class MainMenu(tk.Menu):
         self.file_option.add_command(
             label = get_settings('new'),
             accelerator = 'Ctrl+N',
-            command = self.master.custom_notebook.add_tab
+            command = self.editor.custom_notebook.add_tab
         )
         self.file_option.add_separator()
         self.file_option.add_command(
             label = get_settings('open'),
             accelerator = 'Ctrl+O',
-            command = self.master.open_file
+            command = self.editor.open_file
         )
         self.file_option.add_command(
             label = get_settings('save'),
             accelerator = 'Ctrl+S',
-            command = self.master.save_file
+            command = self.editor.save_file
         )
         self.file_option.add_command(
             label = get_settings('save_as'),
             accelerator = 'Ctrl+Alt+S',
-            command = self.master.save_file_as
+            command = self.editor.save_file_as
         )
 
         # File List
@@ -78,13 +80,13 @@ class MainMenu(tk.Menu):
         self.file_option.add_command(
             label = get_settings('close'),
             accelerator = 'Ctrl+F4',
-            command = self.master.custom_notebook.safely_close_file
+            command = self.editor.custom_notebook.safely_close_file
         )
         self.file_option.add_separator()
         self.file_option.add_command(
             label = get_settings('exit'),
             accelerator = 'Alt+F4',
-            command = self.master.exiting
+            command = self.editor.exiting
         )
 
         self.add_cascade(label = get_settings('file'), menu = self.file_option)
@@ -100,34 +102,34 @@ class MainMenu(tk.Menu):
         self.edit_option.add_command(
             label = get_settings('undo'),
             accelerator = 'Ctrl+Z',
-            command = lambda : self.master.custom_notebook.get_tab()[1].text_panel.undo()
+            command = lambda : self.editor.custom_notebook.get_tab()[1].text_panel.undo()
         )
         self.edit_option.add_command(
             label = get_settings('redo'),
             accelerator = 'Ctrl+Y',
-            command = lambda : self.master.custom_notebook.get_tab()[1].text_panel.redo()
+            command = lambda : self.editor.custom_notebook.get_tab()[1].text_panel.redo()
         )
         self.edit_option.add_separator()
         self.edit_option.add_command(
             label = get_settings('copy'),
             accelerator = 'Ctrl+C',
-            command = lambda : self.master.custom_notebook.get_tab()[1].text_panel.copy()
+            command = lambda : self.editor.custom_notebook.get_tab()[1].text_panel.copy()
         )
         self.edit_option.add_command(
             label = get_settings('cut'),
             accelerator = 'Ctrl+X',
-            command = lambda : self.master.custom_notebook.get_tab()[1].text_panel.cut()
+            command = lambda : self.editor.custom_notebook.get_tab()[1].text_panel.cut()
         )
         self.edit_option.add_command(
             label = get_settings('paste'),
             accelerator = 'Ctrl+V',
-            command = lambda : self.master.custom_notebook.get_tab()[1].text_panel.paste()
+            command = lambda : self.editor.custom_notebook.get_tab()[1].text_panel.paste()
         )
         self.edit_option.add_separator()
         self.edit_option.add_command(
             label = get_settings('select_all'),
             accelerator = 'Ctrl+A',
-            command = lambda : self.master.custom_notebook.get_tab()[1].text_panel.select_all()
+            command = lambda : self.editor.custom_notebook.get_tab()[1].text_panel.select_all()
         )
         self.edit_option.add_separator()
         self.edit_option.add_command(
@@ -184,15 +186,15 @@ class MainMenu(tk.Menu):
 
     def _change_status_of_options(self):
 
-        status = 'disabled' if not self.master.custom_notebook.tabs() else 'normal'
+        status = 'disabled' if not self.editor.custom_notebook.tabs() else 'normal'
 
         for option in ['file', 'edit', 'view']:
             for each in eval(f'self.{option}_option_checklist'):
                 eval(f'self.{option}_option.entryconfig("{each}", state = "{status}")')
 
         try:
-            self.master.clipboard_get()
-            if self.master.custom_notebook.tabs():
+            self.editor.clipboard_get()
+            if self.editor.custom_notebook.tabs():
                 self.edit_option.entryconfig(get_settings('paste'), state = 'normal')
         except tk.TclError:
             self.edit_option.entryconfig(get_settings('paste'), state = 'disabled')
@@ -223,7 +225,7 @@ class MainMenu(tk.Menu):
         for path in reversed(paths):
             self.file_list.add_command(
                 label = path,
-                command = lambda path = path: self.master.open_file(file_path = path)
+                command = lambda path = path: self.editor.open_file(file_path = path)
             )
 
         self.file_list.add_separator()
@@ -256,22 +258,22 @@ class MainMenu(tk.Menu):
 
     def _get_tab_list(self):
 
-        if not self.master.custom_notebook.tabs():
+        if not self.editor.custom_notebook.tabs():
             return
 
         self.tab_list.delete('0', 'end')
 
-        tabs_id = self.master.custom_notebook.tabs()
+        tabs_id = self.editor.custom_notebook.tabs()
 
         for tab_id in tabs_id:
-            tab = self.master.custom_notebook.get_tab(tab_id)
-            now_tab_id, _ = self.master.custom_notebook.get_tab()
+            tab = self.editor.custom_notebook.get_tab(tab_id)
+            now_tab_id, _ = self.editor.custom_notebook.get_tab()
 
             tab_name = tab.label
 
             self.tab_list.add_command(
                 label = tab_name,
-                command = lambda tab_id = tab_id: self.master.custom_notebook.select(tab_id)
+                command = lambda tab_id = tab_id: self.editor.custom_notebook.select(tab_id)
             )
 
             if tab_id == now_tab_id:
@@ -279,14 +281,14 @@ class MainMenu(tk.Menu):
 
     def zoom_in_font(self, event = None):
 
-        if not self.master.custom_notebook.tabs() or self.font_size.get() == 60:
+        if not self.editor.custom_notebook.tabs() or self.font_size.get() == 60:
             return
 
         self.font_size.set(self.font_size.get() + 1)
 
     def zoom_out_font(self, event = None):
 
-        if not self.master.custom_notebook.tabs() or self.font_size.get() == 1:
+        if not self.editor.custom_notebook.tabs() or self.font_size.get() == 1:
             return
 
         self.font_size.set(self.font_size.get() - 1)
