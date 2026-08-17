@@ -43,10 +43,6 @@ class LineNumberBar(tk.Text):
 
         self.update_highlight_current_line()
 
-    def scroll_when_searching(self):
-
-        self.yview_moveto(self.tab.text_panel.yview()[0])
-
     def wheel(self, event):
 
         speed = int(-1 * (event.delta / 60))
