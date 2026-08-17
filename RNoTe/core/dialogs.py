@@ -8,7 +8,7 @@ class Dialog(tk.Toplevel):
         super().__init__()
         self.editor = self.master
 
-        self.transient(self.master)
+        self.transient(self.editor)
 
         self.attributes('-topmost', True)
         self.resizable(False, False)
