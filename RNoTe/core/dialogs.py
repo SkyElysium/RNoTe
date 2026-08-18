@@ -126,10 +126,6 @@ class FindDialog(Dialog):
             self.is_regexp_on = False
             self.regexp_toggle.config(text = '.*')
 
-    def _not_delete(self, event):
-
-        return 'break'
-
     def _search_for_words(self, event):
 
         if not self.editor.custom_notebook.tabs():
