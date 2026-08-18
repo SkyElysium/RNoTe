@@ -24,6 +24,7 @@ SETTINGS = {
     'paste'        : '粘贴',
     'select_all'   : '全选',
     'find'         : '查找',
+    'tab_indent'   : '制表符缩进',
     'view'         : '视图',
     'zoom_in'      : '放大',
     'zoom_out'     : '缩小',

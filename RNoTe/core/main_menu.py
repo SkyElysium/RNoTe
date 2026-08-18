@@ -13,6 +13,7 @@ class MainMenu(tk.Menu):
         super().__init__(master)
         self.editor = master
         self.font_size = master.custom_notebook.font_size
+        self.is_tab_on = master.custom_notebook.is_tab_on
 
         self['postcommand'] = self._change_status_of_options
 
@@ -134,6 +135,13 @@ class MainMenu(tk.Menu):
             label = get_settings('find'),
             accelerator = 'Ctrl+F',
             command = self.popup_find_dialog
+        )
+        self.edit_option.add_separator()
+        self.edit_option.add_checkbutton(
+            label = get_settings('tab_indent'),
+            variable = self.is_tab_on,
+            onvalue = True,
+            offvalue = False
         )
 
         self.add_cascade(label = get_settings('edit'), menu = self.edit_option)

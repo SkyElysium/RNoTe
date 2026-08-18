@@ -18,6 +18,7 @@ class CustomNotebook(ttk.Notebook):
         self.editor = master
 
         self.font_size = tk.IntVar(self, 13)
+        self.is_tab_on = tk.BooleanVar(self, False)
 
         # Create the "close" button.
         self.close_image = tk.PhotoImage(file = get_path('tab_x'))
@@ -149,6 +150,7 @@ class TextTab(tk.Frame):
         self.editor = master.editor
         self.notebook = master
         self.font_size = master.font_size
+        self.is_tab_on = master.is_tab_on
 
         # Tab Info
         self.path = ''
@@ -209,6 +211,7 @@ class TextPanel(tk.Text):
         self.notebook = master.notebook
         self.tab = master
         self.font_size = master.font_size
+        self.is_tab_on = master.is_tab_on
 
         self.config(
             wrap = 'none',
@@ -225,6 +228,7 @@ class TextPanel(tk.Text):
         self.bind('<Button-3>', self._popup_menu)
         self.bind('<Control-o>', self._ctrl_o)
         self.bind('<<Modified>>', self._text_is_changed)
+        self.bind('<Tab>', self._indent)
 
         # For highlighting the current line
         self.bind('<Button-1>', self.tab.delay_to_highlight)
@@ -349,3 +353,10 @@ class TextPanel(tk.Text):
             self.notebook.tab(self.tab, text = f'*{self.tab.label}')
         else:
             self.notebook.tab(self.tab, text = self.tab.label)
+
+    def _indent(self, event):
+
+        if not self.is_tab_on.get():
+            self.insert('insert', ' ' * 4)
+
+            return 'break'
