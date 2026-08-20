@@ -1,7 +1,7 @@
 # RNoTe
 
 ![Static Badge](https://img.shields.io/badge/Python-3.8.9-blue?logo=python&logoColor=white)
-![Static Badge](https://img.shields.io/badge/Realeses-v0.1.0-coral?style=flat)
+![Static Badge](https://img.shields.io/badge/Realeses-v0.1.1-coral?style=flat)
 
 &emsp;&emsp;本项目是使用 Tkinter 开发的一个轻量快捷的文本编辑器，软件界面设计整洁，  
 适合沉浸式编辑文本和写笔记。
