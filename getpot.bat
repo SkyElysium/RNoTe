@@ -1,0 +1,1 @@
+python <your pygettext.py> -o RNoTe\lang\messages.pot RNoTe\core\editor.py core\main_menu.py RNoTe\core\dialogs.py RNoTe\core\custom_notebook.py
