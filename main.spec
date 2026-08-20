@@ -11,7 +11,7 @@ a = Analysis(
     'RNoTe/core/dialogs.py'],
     pathex=[],
     binaries=[],
-    datas=[('RNoTe/data', 'RNoTe/data'), (''RNoTe/lang', ''RNoTe/lang')],
+    datas=[('RNoTe/data', 'RNoTe/data'), ('RNoTe/lang', 'RNoTe/lang')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
