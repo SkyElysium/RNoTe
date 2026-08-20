@@ -3,7 +3,7 @@ import tkinter.ttk as ttk
 
 import webbrowser
 
-from .config import get_settings, get_path
+from .config import get_settings, get_path, _
 from .dialogs import show_about_dialog, show_find_dialog
 
 
@@ -18,9 +18,9 @@ class MainMenu(tk.Menu):
         self['postcommand'] = self._change_status_of_options
 
         # Options that need checking the status in "_change_status_of_options"
-        self.file_option_checklist = get_settings('close', 'save', 'save_as', 'tab')
-        self.edit_option_checklist = get_settings('undo', 'redo', 'copy', 'cut', 'paste', 'select_all', 'find')
-        self.view_option_checklist = get_settings('zoom_in', 'zoom_out', 'original_size')
+        self.file_option_checklist = [_('Close'), _('Save'), _('Save As...'), _('Tabs')]
+        self.edit_option_checklist = [_('Undo'), _('Redo'), _('Copy'), _('Cut'), _('Paste'), _('Select All'), _('Find')]
+        self.view_option_checklist = [_('Zoom In'), _('Zoom Out'), _('Original Size')]
 
         # File
         self.file_option = tk.Menu(
@@ -31,23 +31,23 @@ class MainMenu(tk.Menu):
         )
 
         self.file_option.add_command(
-            label = get_settings('new'),
+            label = _('New'),
             accelerator = 'Ctrl+N',
             command = self.editor.custom_notebook.add_tab
         )
         self.file_option.add_separator()
         self.file_option.add_command(
-            label = get_settings('open'),
+            label = _('Open'),
             accelerator = 'Ctrl+O',
             command = self.editor.open_file
         )
         self.file_option.add_command(
-            label = get_settings('save'),
+            label = _('Save'),
             accelerator = 'Ctrl+S',
             command = self.editor.save_file
         )
         self.file_option.add_command(
-            label = get_settings('save_as'),
+            label = _('Save As...'),
             accelerator = 'Ctrl+Alt+S',
             command = self.editor.save_file_as
         )
@@ -61,7 +61,7 @@ class MainMenu(tk.Menu):
             postcommand = self._get_file_list
         )
 
-        self.file_option.add_cascade(label = get_settings('open_recently'), menu = self.file_list)
+        self.file_option.add_cascade(label = _('Open Recently'), menu = self.file_list)
 
         self.file_option.add_separator()
 
@@ -74,21 +74,21 @@ class MainMenu(tk.Menu):
             postcommand = self._get_tab_list
         )
 
-        self.file_option.add_cascade(label = get_settings('tab'), menu = self.tab_list)
+        self.file_option.add_cascade(label = _('Tabs'), menu = self.tab_list)
 
         self.file_option.add_command(
-            label = get_settings('close'),
+            label = _('Close'),
             accelerator = 'Ctrl+F4',
             command = self.editor.custom_notebook.safely_close_file
         )
         self.file_option.add_separator()
         self.file_option.add_command(
-            label = get_settings('exit'),
+            label = _('Exit'),
             accelerator = 'Alt+F4',
             command = self.editor.exiting
         )
 
-        self.add_cascade(label = get_settings('file'), menu = self.file_option)
+        self.add_cascade(label = _('File'), menu = self.file_option)
 
         # Edit
         self.edit_option = tk.Menu(
@@ -99,52 +99,52 @@ class MainMenu(tk.Menu):
         )
 
         self.edit_option.add_command(
-            label = get_settings('undo'),
+            label = _('Undo'),
             accelerator = 'Ctrl+Z',
             command = lambda : self.editor.custom_notebook.get_tab()[1].text_panel.undo()
         )
         self.edit_option.add_command(
-            label = get_settings('redo'),
+            label = _('Redo'),
             accelerator = 'Ctrl+Y',
             command = lambda : self.editor.custom_notebook.get_tab()[1].text_panel.redo()
         )
         self.edit_option.add_separator()
         self.edit_option.add_command(
-            label = get_settings('copy'),
+            label = _('Copy'),
             accelerator = 'Ctrl+C',
             command = lambda : self.editor.custom_notebook.get_tab()[1].text_panel.copy()
         )
         self.edit_option.add_command(
-            label = get_settings('cut'),
+            label = _('Cut'),
             accelerator = 'Ctrl+X',
             command = lambda : self.editor.custom_notebook.get_tab()[1].text_panel.cut()
         )
         self.edit_option.add_command(
-            label = get_settings('paste'),
+            label = _('Paste'),
             accelerator = 'Ctrl+V',
             command = lambda : self.editor.custom_notebook.get_tab()[1].text_panel.paste()
         )
         self.edit_option.add_separator()
         self.edit_option.add_command(
-            label = get_settings('select_all'),
+            label = _('Select All'),
             accelerator = 'Ctrl+A',
             command = lambda : self.editor.custom_notebook.get_tab()[1].text_panel.select_all()
         )
         self.edit_option.add_separator()
         self.edit_option.add_command(
-            label = get_settings('find'),
+            label = _('Find'),
             accelerator = 'Ctrl+F',
             command = self.popup_find_dialog
         )
         self.edit_option.add_separator()
         self.edit_option.add_checkbutton(
-            label = get_settings('tab_indent'),
+            label = _('Tab Indent'),
             variable = self.is_tab_on,
             onvalue = True,
             offvalue = False
         )
 
-        self.add_cascade(label = get_settings('edit'), menu = self.edit_option)
+        self.add_cascade(label = _('Edit'), menu = self.edit_option)
 
         # View
         self.view_option = tk.Menu(
@@ -155,21 +155,21 @@ class MainMenu(tk.Menu):
         )
 
         self.view_option.add_command(
-            label = get_settings('zoom_in'),
+            label = _('Zoom In'),
             accelerator = 'Ctrl++',
             command = self.zoom_in_font
         )
         self.view_option.add_command(
-            label = get_settings('zoom_out'),
+            label = _('Zoom Out'),
             accelerator = 'Ctrl+-',
             command = self.zoom_out_font
         )
         self.view_option.add_command(
-            label = get_settings('original_size'),
+            label = _('Original Size'),
             command = lambda : self.font_size.set(13)
         )
 
-        self.add_cascade(label = get_settings('view'), menu = self.view_option)
+        self.add_cascade(label = _('View'), menu = self.view_option)
 
         # About
         self.about_option = tk.Menu(
@@ -180,15 +180,15 @@ class MainMenu(tk.Menu):
         )
 
         self.about_option.add_command(
-            label = get_settings('about'),
+            label = _('About'),
             command = show_about_dialog
         )
         self.about_option.add_command(
-            label = get_settings('feedback'),
+            label = _('Feedback'),
             command = lambda : webbrowser.open('https://github.com/SkyElysium/RNoTe/issues/new')
         )
 
-        self.add_cascade(label = get_settings('about'), menu = self.about_option)
+        self.add_cascade(label = _('About'), menu = self.about_option)
 
     def _change_status_of_options(self):
 
@@ -201,12 +201,12 @@ class MainMenu(tk.Menu):
         try:
             self.editor.clipboard_get()
             if self.editor.custom_notebook.tabs():
-                self.edit_option.entryconfig(get_settings('paste'), state = 'normal')
+                self.edit_option.entryconfig(_('Paste'), state = 'normal')
         except tk.TclError:
-            self.edit_option.entryconfig(get_settings('paste'), state = 'disabled')
+            self.edit_option.entryconfig(_('Paste'), state = 'disabled')
 
         self.view_option.entryconfig(
-            get_settings('original_size'),
+            _('Original Size'),
             state = 'disabled' if self.font_size.get() == 13 else 'normal'
         )
 
@@ -217,12 +217,12 @@ class MainMenu(tk.Menu):
                 paths = f.read().splitlines()
 
                 if not paths:
-                    self.file_option.entryconfig(get_settings('open_recently'), state = 'disabled')
+                    self.file_option.entryconfig(_('Open Recently'), state = 'disabled')
 
                     return
-                else: self.file_option.entryconfig(get_settings('open_recently'), state = 'normal')
+                else: self.file_option.entryconfig(_('Open Recently'), state = 'normal')
         except FileNotFoundError:
-            self.file_option.entryconfig(get_settings('open_recently'), state = 'disabled')
+            self.file_option.entryconfig(_('Open Recently'), state = 'disabled')
 
             return
 
@@ -235,7 +235,7 @@ class MainMenu(tk.Menu):
             )
 
         self.file_list.add_separator()
-        self.file_list.add_command(label = get_settings('clean_records'), command = self._clean_records)
+        self.file_list.add_command(label = _('Clean Records'), command = self._clean_records)
 
     def record_new_file(self, file_path):
 

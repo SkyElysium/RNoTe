@@ -4,7 +4,7 @@ from pathlib import Path
 import tkinter as tk
 from tkinter import messagebox, filedialog
 
-from .config import get_settings, get_path
+from .config import get_settings, get_path, _
 from .main_menu import MainMenu
 from .custom_notebook import CustomNotebook
 
@@ -47,8 +47,8 @@ class Editor(tk.Tk):
     def open_file(self, event = None, file_path = ''):
 
         path = filedialog.askopenfilename(
-            title = '打开',
-            filetypes = [('文本文档', '*.txt'), ('所有类型', '*.*')]
+            title = _('Open'),
+            filetypes = [(_('Text File'), '*.txt'), (_('All Types'), '*.*')]
         ) if not file_path else file_path
 
         if not path:
@@ -66,7 +66,7 @@ class Editor(tk.Tk):
             if not file.exists():
                 messagebox.showwarning(
                     title = get_settings('win_title'),
-                    message = '打开的文件路径不存在'
+                    message = _('The file path you open is not exist')
                 )
                 return
 
@@ -77,7 +77,7 @@ class Editor(tk.Tk):
         except UnicodeDecodeError:
             messagebox.showerror(
                 title = get_settings('win_title'),
-                message = '无法打开此文件，因为不是 UTF-8 格式，或者这是一个程序文件'
+                message = _('Cannot open this file, not UTF-8 format or a program')
             )
 
             return
@@ -118,9 +118,9 @@ class Editor(tk.Tk):
             return
 
         path = filedialog.asksaveasfilename(
-            title = '另存为...',
+            title = _('Save As...'),
             defaultextension = '.txt',
-            filetypes = [('文本文档', '*.txt'), ('所有类型', '*.*')]
+            filetypes = [(_('Text File'), '*.txt'), (_('All Types'), '*.*')]
         )
 
         if not path:
@@ -155,7 +155,7 @@ class Editor(tk.Tk):
         if any(if_saved):
             reply = messagebox.askyesnocancel(
                 title = get_settings('win_title'),
-                message = '存在未保存的文件，在关闭程序前手动保存所有文件？'
+                message = _('Save all of the unsaved files by hand?')
             )
             if reply or reply is None:
                 return

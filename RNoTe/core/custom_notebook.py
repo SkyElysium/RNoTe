@@ -5,6 +5,7 @@ from tkinter import filedialog, messagebox
 from .config import (
     get_settings,
     get_path,
+    _,
     CUSTOM_X_SCROLLBAR_STYLE,
     CUSTOM_NOTEBOOK_STYLE
 )
@@ -97,7 +98,7 @@ class CustomNotebook(ttk.Notebook):
         if text_tab.text_panel.edit_modified():
             reply = messagebox.askyesnocancel(
                 title = get_settings('win_title'),
-                message = '是否在关闭之前保存文件？'
+                message = _('Save the file before closing?')
             )
             if reply and self.editor.save_file(file_path = text_tab.path) == 'NotSaved':
                 return
@@ -109,7 +110,7 @@ class CustomNotebook(ttk.Notebook):
 
         self.remove_tab(tab_id = tab_id)
 
-    def add_tab(self, event = None, tab_name = '未命名'):
+    def add_tab(self, event = None, tab_name = _('Untitled')):
 
         text_tab = TextTab(self)
         text_tab.label = tab_name
@@ -246,11 +247,11 @@ class TextPanel(tk.Text):
 
         self.menu = tk.Menu(self, tearoff = False, activeforeground = 'black', activebackground = '#91c9f7')
 
-        self.menu.add_command(label = get_settings('copy'), accelerator = 'Ctrl+C', command = self.copy)
-        self.menu.add_command(label = get_settings('cut'), accelerator = 'Ctrl+X', command = self.cut)
-        self.menu.add_command(label = get_settings('paste'), accelerator = 'Ctrl+V', command = self.paste)
+        self.menu.add_command(label = _('Copy'), accelerator = 'Ctrl+C', command = self.copy)
+        self.menu.add_command(label = _('Cut'), accelerator = 'Ctrl+X', command = self.cut)
+        self.menu.add_command(label = _('Paste'), accelerator = 'Ctrl+V', command = self.paste)
         self.menu.add_separator()
-        self.menu.add_command(label = get_settings('copy_present_path'), command = self._copy_file_path)
+        self.menu.add_command(label = _('Copy Present Path'), command = self._copy_file_path)
 
     def _popup_menu(self, event):
 
@@ -266,15 +267,15 @@ class TextPanel(tk.Text):
     def _check_status_of_options(self):
 
         if self.tab.path:
-            self.menu.entryconfig(get_settings('copy_present_path'), state = 'normal')
+            self.menu.entryconfig(_('Copy Present Path'), state = 'normal')
         else:
-            self.menu.entryconfig(get_settings('copy_present_path'), state = 'disabled')
+            self.menu.entryconfig(_('Copy Present Path'), state = 'disabled')
 
         try:
             self.editor.clipboard_get()
-            self.menu.entryconfig(get_settings('paste'), state = 'normal')
+            self.menu.entryconfig(_('Paste'), state = 'normal')
         except tk.TclError:
-            self.menu.entryconfig(get_settings('paste'), state = 'disabled')
+            self.menu.entryconfig(_('Paste'), state = 'disabled')
 
     def copy(self):
 

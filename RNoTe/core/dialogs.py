@@ -1,6 +1,8 @@
 import tkinter as tk
 import tkinter.ttk as ttk
 
+from .config import _
+
 
 class Dialog(tk.Toplevel):
     def __init__(self):
@@ -34,7 +36,7 @@ class Dialog(tk.Toplevel):
 
 class FindDialog(Dialog):
 
-    DIALOG_TITLE = '查找'
+    DIALOG_TITLE = _('Find')
     DIALOG_SIZE = '330x30'
 
     instance = None
@@ -238,7 +240,7 @@ Copyright (c) 2025 SkyElysium
 
 class AboutDialog(Dialog):
 
-    DIALOG_TITLE = '关于'
+    DIALOG_TITLE = _('About')
     DIALOG_SIZE  = '350x120'
 
     def __init__(self):
