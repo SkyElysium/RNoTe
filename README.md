@@ -21,7 +21,7 @@
 pyinstaller main.spec
 ```
 
-&emsp;&emsp;2.从```dist/main/_internal```目录下将```data```转移到```main```下
+&emsp;&emsp;2.从```dist/main/_internal```目录下将```data```和```lang```转移到```main```下
 
 > ```_internal```只存在 Pyinstaller 6.0.0+
 
