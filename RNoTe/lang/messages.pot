@@ -5,179 +5,153 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2026-08-20 21:30+0800\n"
+"POT-Creation-Date: 2026-08-21 15:03+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=cp936\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: pygettext.py 1.5\n"
 
 
-#: C:\Users\Cai\Desktop\RNoTe\core\custom_notebook.py:101
+#: core\custom_notebook.py:101
 msgid "Save the file before closing?"
 msgstr ""
 
-#: C:\Users\Cai\Desktop\RNoTe\core\custom_notebook.py:113
+#: core\custom_notebook.py:113
 msgid "Untitled"
 msgstr ""
 
-#: C:\Users\Cai\Desktop\RNoTe\core\custom_notebook.py:250
-#: C:\Users\Cai\Desktop\RNoTe\core\main_menu.py:22
-#: C:\Users\Cai\Desktop\RNoTe\core\main_menu.py:113
+#: core\custom_notebook.py:250 core\main_menu.py:27 core\main_menu.py:118
 msgid "Copy"
 msgstr ""
 
-#: C:\Users\Cai\Desktop\RNoTe\core\custom_notebook.py:251
-#: C:\Users\Cai\Desktop\RNoTe\core\main_menu.py:22
-#: C:\Users\Cai\Desktop\RNoTe\core\main_menu.py:118
+#: core\custom_notebook.py:251 core\main_menu.py:27 core\main_menu.py:123
 msgid "Cut"
 msgstr ""
 
-#: C:\Users\Cai\Desktop\RNoTe\core\custom_notebook.py:252
-#: C:\Users\Cai\Desktop\RNoTe\core\custom_notebook.py:276
-#: C:\Users\Cai\Desktop\RNoTe\core\custom_notebook.py:278
-#: C:\Users\Cai\Desktop\RNoTe\core\main_menu.py:22
-#: C:\Users\Cai\Desktop\RNoTe\core\main_menu.py:123
-#: C:\Users\Cai\Desktop\RNoTe\core\main_menu.py:204
-#: C:\Users\Cai\Desktop\RNoTe\core\main_menu.py:206
+#: core\custom_notebook.py:252 core\custom_notebook.py:276
+#: core\custom_notebook.py:278 core\main_menu.py:27 core\main_menu.py:128
+#: core\main_menu.py:221 core\main_menu.py:223
 msgid "Paste"
 msgstr ""
 
-#: C:\Users\Cai\Desktop\RNoTe\core\custom_notebook.py:254
-#: C:\Users\Cai\Desktop\RNoTe\core\custom_notebook.py:270
-#: C:\Users\Cai\Desktop\RNoTe\core\custom_notebook.py:272
+#: core\custom_notebook.py:254 core\custom_notebook.py:270
+#: core\custom_notebook.py:272
 msgid "Copy Present Path"
 msgstr ""
 
-#: C:\Users\Cai\Desktop\RNoTe\core\dialogs.py:39
-#: C:\Users\Cai\Desktop\RNoTe\core\main_menu.py:22
-#: C:\Users\Cai\Desktop\RNoTe\core\main_menu.py:135
+#: core\dialogs.py:39 core\main_menu.py:27 core\main_menu.py:140
 msgid "Find"
 msgstr ""
 
-#: C:\Users\Cai\Desktop\RNoTe\core\dialogs.py:243
-#: C:\Users\Cai\Desktop\RNoTe\core\main_menu.py:183
-#: C:\Users\Cai\Desktop\RNoTe\core\main_menu.py:191
+#: core\dialogs.py:243 core\main_menu.py:200 core\main_menu.py:208
 msgid "About"
 msgstr ""
 
-#: C:\Users\Cai\Desktop\RNoTe\core\editor.py:50
-#: C:\Users\Cai\Desktop\RNoTe\core\main_menu.py:40
+#: core\editor.py:50 core\main_menu.py:45
 msgid "Open"
 msgstr ""
 
-#: C:\Users\Cai\Desktop\RNoTe\core\editor.py:51
-#: C:\Users\Cai\Desktop\RNoTe\core\editor.py:123
+#: core\editor.py:51 core\editor.py:123
 msgid "All Types"
 msgstr ""
 
-#: C:\Users\Cai\Desktop\RNoTe\core\editor.py:51
-#: C:\Users\Cai\Desktop\RNoTe\core\editor.py:123
+#: core\editor.py:51 core\editor.py:123
 msgid "Text File"
 msgstr ""
 
-#: C:\Users\Cai\Desktop\RNoTe\core\editor.py:69
+#: core\editor.py:69
 msgid "The file path you open is not exist"
 msgstr ""
 
-#: C:\Users\Cai\Desktop\RNoTe\core\editor.py:80
+#: core\editor.py:80
 msgid "Cannot open this file, not UTF-8 format or a program"
 msgstr ""
 
-#: C:\Users\Cai\Desktop\RNoTe\core\editor.py:121
-#: C:\Users\Cai\Desktop\RNoTe\core\main_menu.py:21
-#: C:\Users\Cai\Desktop\RNoTe\core\main_menu.py:50
+#: core\editor.py:121 core\main_menu.py:26 core\main_menu.py:55
 msgid "Save As..."
 msgstr ""
 
-#: C:\Users\Cai\Desktop\RNoTe\core\editor.py:158
+#: core\editor.py:158
 msgid "Save all of the unsaved files by hand?"
 msgstr ""
 
-#: C:\Users\Cai\Desktop\RNoTe\core\main_menu.py:21
-#: C:\Users\Cai\Desktop\RNoTe\core\main_menu.py:45
+#: core\main_menu.py:26 core\main_menu.py:50
 msgid "Save"
 msgstr ""
 
-#: C:\Users\Cai\Desktop\RNoTe\core\main_menu.py:21
-#: C:\Users\Cai\Desktop\RNoTe\core\main_menu.py:77
+#: core\main_menu.py:26 core\main_menu.py:82
 msgid "Tabs"
 msgstr ""
 
-#: C:\Users\Cai\Desktop\RNoTe\core\main_menu.py:21
-#: C:\Users\Cai\Desktop\RNoTe\core\main_menu.py:80
+#: core\main_menu.py:26 core\main_menu.py:85
 msgid "Close"
 msgstr ""
 
-#: C:\Users\Cai\Desktop\RNoTe\core\main_menu.py:22
-#: C:\Users\Cai\Desktop\RNoTe\core\main_menu.py:102
+#: core\main_menu.py:27 core\main_menu.py:107
 msgid "Undo"
 msgstr ""
 
-#: C:\Users\Cai\Desktop\RNoTe\core\main_menu.py:22
-#: C:\Users\Cai\Desktop\RNoTe\core\main_menu.py:107
+#: core\main_menu.py:27 core\main_menu.py:112
 msgid "Redo"
 msgstr ""
 
-#: C:\Users\Cai\Desktop\RNoTe\core\main_menu.py:22
-#: C:\Users\Cai\Desktop\RNoTe\core\main_menu.py:129
+#: core\main_menu.py:27 core\main_menu.py:134
 msgid "Select All"
 msgstr ""
 
-#: C:\Users\Cai\Desktop\RNoTe\core\main_menu.py:23
-#: C:\Users\Cai\Desktop\RNoTe\core\main_menu.py:158
+#: core\main_menu.py:28 core\main_menu.py:163
 msgid "Zoom In"
 msgstr ""
 
-#: C:\Users\Cai\Desktop\RNoTe\core\main_menu.py:23
-#: C:\Users\Cai\Desktop\RNoTe\core\main_menu.py:163
+#: core\main_menu.py:28 core\main_menu.py:168
 msgid "Zoom Out"
 msgstr ""
 
-#: C:\Users\Cai\Desktop\RNoTe\core\main_menu.py:23
-#: C:\Users\Cai\Desktop\RNoTe\core\main_menu.py:168
-#: C:\Users\Cai\Desktop\RNoTe\core\main_menu.py:209
+#: core\main_menu.py:28 core\main_menu.py:173 core\main_menu.py:226
 msgid "Original Size"
 msgstr ""
 
-#: C:\Users\Cai\Desktop\RNoTe\core\main_menu.py:34
+#: core\main_menu.py:39
 msgid "New"
 msgstr ""
 
-#: C:\Users\Cai\Desktop\RNoTe\core\main_menu.py:64
-#: C:\Users\Cai\Desktop\RNoTe\core\main_menu.py:220
-#: C:\Users\Cai\Desktop\RNoTe\core\main_menu.py:223
-#: C:\Users\Cai\Desktop\RNoTe\core\main_menu.py:225
+#: core\main_menu.py:69 core\main_menu.py:237 core\main_menu.py:240
+#: core\main_menu.py:242
 msgid "Open Recently"
 msgstr ""
 
-#: C:\Users\Cai\Desktop\RNoTe\core\main_menu.py:86
+#: core\main_menu.py:91
 msgid "Exit"
 msgstr ""
 
-#: C:\Users\Cai\Desktop\RNoTe\core\main_menu.py:91
+#: core\main_menu.py:96
 msgid "File"
 msgstr ""
 
-#: C:\Users\Cai\Desktop\RNoTe\core\main_menu.py:141
+#: core\main_menu.py:146
 msgid "Tab Indent"
 msgstr ""
 
-#: C:\Users\Cai\Desktop\RNoTe\core\main_menu.py:147
+#: core\main_menu.py:152
 msgid "Edit"
 msgstr ""
 
-#: C:\Users\Cai\Desktop\RNoTe\core\main_menu.py:172
+#: core\main_menu.py:187
+msgid "Languages"
+msgstr ""
+
+#: core\main_menu.py:189
 msgid "View"
 msgstr ""
 
-#: C:\Users\Cai\Desktop\RNoTe\core\main_menu.py:187
+#: core\main_menu.py:204
 msgid "Feedback"
 msgstr ""
 
-#: C:\Users\Cai\Desktop\RNoTe\core\main_menu.py:238
+#: core\main_menu.py:255
 msgid "Clean Records"
 msgstr ""
 
