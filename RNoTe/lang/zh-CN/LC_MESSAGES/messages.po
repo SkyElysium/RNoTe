@@ -169,6 +169,10 @@ msgstr "制表符缩进"
 msgid "Edit"
 msgstr "编辑"
 
+#: core\main_menu.py:187
+msgid "Languages"
+msgstr "语言"
+
 #: C:\Users\Cai\Desktop\RNoTe\core\main_menu.py:172
 msgid "View"
 msgstr "视图"
