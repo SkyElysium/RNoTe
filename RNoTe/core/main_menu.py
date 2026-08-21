@@ -1,3 +1,5 @@
+import configparser
+
 import tkinter as tk
 import tkinter.ttk as ttk
 
@@ -14,6 +16,9 @@ class MainMenu(tk.Menu):
         self.editor = master
         self.font_size = master.custom_notebook.font_size
         self.is_tab_on = master.custom_notebook.is_tab_on
+
+        self.parser = configparser.ConfigParser()
+        self.parser.read(get_path('langconf'))
 
         self['postcommand'] = self._change_status_of_options
 
@@ -168,6 +173,18 @@ class MainMenu(tk.Menu):
             label = _('Original Size'),
             command = lambda : self.font_size.set(13)
         )
+        self.view_option.add_separator()
+
+        # Language List
+        self.language_list = tk.Menu(
+            self.view_option,
+            tearoff = False,
+            activeforeground = 'black',
+            activebackground = '#91c9f7',
+            postcommand = self._get_language_list
+        )
+
+        self.view_option.add_cascade(label = _('Languages'), menu = self.language_list)
 
         self.add_cascade(label = _('View'), menu = self.view_option)
 
@@ -284,6 +301,25 @@ class MainMenu(tk.Menu):
 
             if tab_id == now_tab_id:
                 self.tab_list.entryconfig(tabs_id.index(tab_id), state = 'disabled')
+
+    def _get_language_list(self):
+
+        self.language_list.delete('0', 'end')
+
+        for lang, code in get_settings('all_lang'):
+            self.language_list.add_command(
+                label = lang,
+                command = lambda code = code: self._record_lang(code)
+            )
+            if code == self.parser.get('lang', 'lang'):
+                self.language_list.entryconfig(lang, state = 'disabled')
+
+    def _record_lang(self, code):
+
+        self.parser.set('lang', 'lang', code)
+
+        with open(get_path('langconf'), 'w', encoding = 'utf-8') as c:
+            self.parser.write(c)
 
     def zoom_in_font(self, event = None):
 

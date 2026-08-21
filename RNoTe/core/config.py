@@ -1,11 +1,14 @@
 import sys
 import os
 import gettext
+import configparser
 
 # Basic Settings
 SETTINGS = {
     'win_title': 'RNoTe',
     'win_size' : '800x500',
+
+    'all_lang': [('简体中文', 'zh-CN'), ('English', 'en')]
 }
 
 def get_settings(*names):
@@ -16,12 +19,12 @@ def get_settings(*names):
 
 RES_RELATIVE_PATHS = {
     'win_icon': 'data/icon.png',
-
-    'tab_x': 'data/close.png',
+    'tab_x'   : 'data/close.png',
 
     'file_history': 'data/config/recent_files.txt',
 
-    'lang': 'lang'
+    'lang'    : 'lang',
+    'langconf': 'data/config/config.ini'
 }
 
 def get_path(name):
@@ -33,11 +36,20 @@ def get_path(name):
     return RES_RELATIVE_PATHS[name]
 
 # Languages
+parser = configparser.ConfigParser()
+
+parser.read(get_path('langconf'))
+lang = parser.get('lang', 'lang')
+
+# en: default
+if lang == 'en':
+    lang = ''
+
 t = gettext.translation(
     'messages',
     get_path('lang'),
     fallback = True,
-    languages = ['zh-CN']
+    languages = [lang]
 )
 _ = t.gettext
 
