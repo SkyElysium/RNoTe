@@ -25,12 +25,18 @@ class LineNumberBar(tk.Text):
 
         self.bind('<Button-1>', self._not_respond_to_cursor)
         self.bind('<B2-Motion>', self._not_respond_to_cursor)
+        self.bind('<<Selection>>', self._selection)
 
         self.bind('<MouseWheel>', self.wheel)
 
     def _not_respond_to_cursor(self, event):
 
         return 'break'
+
+    def _selection(self, event):
+
+        # Tkinter doesn't provide a way to prevent virual event.
+        self.tab.text_panel.yview_moveto(self.yview()[0])
 
     def scroll(self, *xy):
 
