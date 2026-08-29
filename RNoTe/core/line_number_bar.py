@@ -35,7 +35,7 @@ class LineNumberBar(tk.Text):
 
     def _selection(self, event):
 
-        # Tkinter doesn't provide a way to prevent virual event.
+        # Tkinter doesn't provide a way to prevent virtual event.
         self.tab.text_panel.yview_moveto(self.yview()[0])
 
     def scroll(self, *xy):
