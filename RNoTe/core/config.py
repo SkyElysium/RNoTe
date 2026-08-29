@@ -56,29 +56,29 @@ _ = t.gettext
 # Styles
 CUSTOM_NOTEBOOK_STYLE = [
     (
-        "CustomNotebook.tab",
+        'CustomNotebook.tab',
         {
-            "sticky": "nswe",
-            "children": [
+            'sticky': 'nswe',
+            'children': [
                 (
-                    "CustomNotebook.padding",
+                    'CustomNotebook.padding',
                     {
-                        "side": "top",
-                        "sticky": "nswe",
-                        "children": [
+                        'side': 'top',
+                        'sticky': 'nswe',
+                        'children': [
                             (
-                                "CustomNotebook.focus",
+                                'CustomNotebook.focus',
                                 {
-                                    "side": "top",
-                                    "sticky": "nswe",
-                                    "children": [
+                                    'side': 'top',
+                                    'sticky': 'nswe',
+                                    'children': [
                                         (
-                                            "CustomNotebook.label",
-                                            {"side": "left", "sticky": ""},
+                                            'CustomNotebook.label',
+                                            {'side': 'left', 'sticky': ''},
                                         ),
                                         (
-                                            "CustomNotebook.close",
-                                            {"side": "right", "sticky": ""},
+                                            'CustomNotebook.close',
+                                            {'side': 'right', 'sticky': ''},
                                         ),
                                     ],
                                 },
@@ -93,21 +93,21 @@ CUSTOM_NOTEBOOK_STYLE = [
 
 CUSTOM_X_SCROLLBAR_STYLE = [
     (
-        "Custom.Horizontal.TScrollbar.trough",
+        'Custom.Horizontal.TScrollbar.trough',
         {
-            "children": [
+            'children': [
                 (
-                    "Custom.Horizontal.TScrollbar.thumb",
+                    'Custom.Horizontal.TScrollbar.thumb',
                     {
-                        "unit": "1",
-                        "children": [
-                            ("Custom.Horizontal.TScrollbar.grip", {"sticky": ""})
+                        'unit': '1',
+                        'children': [
+                            ('Custom.Horizontal.TScrollbar.grip', {'sticky': ''})
                         ],
-                        "sticky": "nswe",
+                        'sticky': 'nswe',
                     },
                 )
             ],
-            "sticky": "we",
+            'sticky': 'we',
         },
     )
 ]

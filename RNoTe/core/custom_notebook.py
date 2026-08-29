@@ -35,17 +35,17 @@ class CustomNotebook(ttk.Notebook):
         self['style'] = 'CustomNotebook'
 
         # X Scrollbar in each tab
-        self.custom_style.element_create("Custom.Horizontal.TScrollbar.trough", "from", "clam")
-        self.custom_style.element_create("Custom.Horizontal.TScrollbar.thumb", "from", "clam")
-        self.custom_style.element_create("Custom.Horizontal.TScrollbar.grip", "from", "clam")
+        self.custom_style.element_create('Custom.Horizontal.TScrollbar.trough', 'from', 'clam')
+        self.custom_style.element_create('Custom.Horizontal.TScrollbar.thumb', 'from', 'clam')
+        self.custom_style.element_create('Custom.Horizontal.TScrollbar.grip', 'from', 'clam')
 
-        self.custom_style.layout("Custom.Horizontal.TScrollbar", CUSTOM_X_SCROLLBAR_STYLE)
+        self.custom_style.layout('Custom.Horizontal.TScrollbar', CUSTOM_X_SCROLLBAR_STYLE)
 
-        self.custom_style.configure("Custom.Horizontal.TScrollbar",
+        self.custom_style.configure('Custom.Horizontal.TScrollbar',
             gripcount = 0,
-            background = "#c0c0c0",
+            background = '#c0c0c0',
             troughcolor = '#f0f0f0',
-            bordercolor = "#f0f0f0",
+            bordercolor = '#f0f0f0',
             lightcolor = '#c0c0c0',
             darkcolor = '#c0c0c0',
             arrowsize = 6
@@ -229,7 +229,7 @@ class TextPanel(tk.Text):
         self.bind('<Button-3>', self._popup_menu)
         self.bind('<Control-o>', self._ctrl_o)
         self.bind('<<Modified>>', self._text_is_changed)
-        self.bind('<Tab>', self._indent)
+        self.bind('<Tab>', self._do_tab_indent)
 
         # For highlighting the current line
         self.bind('<Button-1>', self.tab.delay_to_highlight)
@@ -355,7 +355,7 @@ class TextPanel(tk.Text):
         else:
             self.notebook.tab(self.tab, text = self.tab.label)
 
-    def _indent(self, event):
+    def _do_tab_indent(self, event):
 
         if not self.is_tab_on.get():
             self.insert('insert', ' ' * 4)
