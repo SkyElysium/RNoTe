@@ -27,7 +27,7 @@ class Editor(tk.Tk):
 
         # Open with
         try:
-            self.open_file(file_path = sys.argv[1])
+            self.open_file(file_path = sys.argv[1].replace('\\', '/'))
         except IndexError:
             self.custom_notebook.add_tab()
 
