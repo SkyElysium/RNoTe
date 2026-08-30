@@ -25,7 +25,11 @@ class Editor(tk.Tk):
         self.main_menu = MainMenu(self)
         self.config(menu = self.main_menu)
 
-        self.custom_notebook.add_tab()
+        # Open with
+        try:
+            self.open_file(file_path = sys.argv[1])
+        except IndexError:
+            self.custom_notebook.add_tab()
 
         bindings = {
             ('<Control-n>', '<Control-N>')        : self.custom_notebook.add_tab,
