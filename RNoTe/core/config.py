@@ -11,11 +11,9 @@ SETTINGS = {
     'all_lang': [('简体中文', 'zh-CN'), ('English', 'en')]
 }
 
-def get_settings(*names):
+def get_settings(name):
 
-    if len(names) != 1:
-        return [SETTINGS[name] for name in names]
-    return SETTINGS[names[0]]
+    return SETTINGS[name]
 
 RES_RELATIVE_PATHS = {
     'win_icon': 'data/icon.png',
