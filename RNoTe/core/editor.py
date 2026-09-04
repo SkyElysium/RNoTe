@@ -95,7 +95,7 @@ class Editor(tk.Tk):
 
         text_tab.line_number_bar.update_line_number()
 
-    def save_file(self, event = None, file_path = '') :
+    def save_file(self, event = None, file_path = ''):
 
         if not self.custom_notebook.tabs():
             return
