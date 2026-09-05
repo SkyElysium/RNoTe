@@ -78,6 +78,7 @@ class Editor(tk.Tk):
 
             text_tab = self.custom_notebook.add_tab(tab_name = file.name)
             text_tab.text_panel.insert('end', text)
+            text_tab.text_panel.edit_reset()
         except UnicodeDecodeError:
             messagebox.showerror(
                 title = get_settings('win_title'),
