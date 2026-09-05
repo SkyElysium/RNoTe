@@ -3,6 +3,8 @@
 ![Static Badge](https://img.shields.io/badge/Python-3.8.9-blue?logo=python&logoColor=white)
 ![Static Badge](https://img.shields.io/badge/Realeses-v0.1.1-coral?style=flat)
 
+[简体中文](README.md) | English
+
 &emsp;&emsp;The project is a quick text editor written in Tkinter. The interface is clear,  
 and it's proper to edit text and take notes.
 
