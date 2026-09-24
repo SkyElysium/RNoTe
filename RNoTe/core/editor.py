@@ -90,7 +90,7 @@ class Editor(tk.Tk):
                 return
             reply = messagebox.askyesno(
                 title = get_settings('win_title'),
-                message = _(f'The file format is UTF-8. it may be {encoding}, try it?')
+                message = _('The file format is not UTF-8. it may be {encoding}, try it?').format(encoding = encoding)
             )
             if not reply:
                 return
