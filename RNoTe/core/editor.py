@@ -1,3 +1,5 @@
+import chardet
+
 import sys
 from pathlib import Path
 
@@ -64,28 +66,47 @@ class Editor(tk.Tk):
             if path == text_tab.path:
                 return
 
-        try:
-            file = Path(path)
+        file = Path(path)
 
-            if not file.exists():
-                messagebox.showwarning(
+        if not file.exists():
+            messagebox.showwarning(
+                title = get_settings('win_title'),
+                message = _('The file path you open is not exist')
+            )
+            return
+
+        text_bytes = file.read_bytes()
+
+        try:
+            text = text_bytes.decode(encoding = 'utf-8')
+        except UnicodeDecodeError:
+            # Only need a small chunk.
+            encoding = chardet.detect(text_bytes[0:1024])['encoding']
+            if encoding is None:
+                messagebox.showerror(
                     title = get_settings('win_title'),
-                    message = _('The file path you open is not exist')
+                    message = _('Cannot open this file, it may be a program')
+                )
+                return
+            reply = messagebox.askyesno(
+                title = get_settings('win_title'),
+                message = _(f'The file format is UTF-8. it may be {encoding}, try it?')
+            )
+            if not reply:
+                return
+
+            try:
+                text = text_bytes.decode(encoding = encoding)
+            except UnicodeDecodeError:
+                messagebox.showerror(
+                    title = get_settings('win_title'),
+                    message = _('Cannot open this file, it may be a program')
                 )
                 return
 
-            text = file.read_text(encoding = 'utf-8')
-
-            text_tab = self.custom_notebook.add_tab(tab_name = file.name)
-            text_tab.text_panel.insert('end', text)
-            text_tab.text_panel.edit_reset()
-        except UnicodeDecodeError:
-            messagebox.showerror(
-                title = get_settings('win_title'),
-                message = _('Cannot open this file, not UTF-8 format or a program')
-            )
-
-            return
+        text_tab = self.custom_notebook.add_tab(tab_name = file.name)
+        text_tab.text_panel.insert('end', text)
+        text_tab.text_panel.edit_reset()
 
         text_tab.path = path
 
