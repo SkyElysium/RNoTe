@@ -80,15 +80,15 @@ msgstr "文本文件"
 
 #: C:\Users\Cai\Desktop\RNoTe\core\editor.py:69
 msgid "The file path you open is not exist"
-msgstr "打开的文件路径不存在"
+msgstr "此文件路径不存在"
 
 #: core\editor.py:88 core\editor.py:103
 msgid "Cannot open this file, it may be a program"
-msgstr "无法打开这个文件，它可能是一个程序"
+msgstr "无法打开此文件，它可能是一个程序文件"
 
 #: core\editor.py:93
-msgid "The file format is not UTF-8. it may be {encoding}, try it?"
-msgstr "文件格式不是 UTF-8，它可能是{encoding}，尝试下？"
+msgid "The file format is not UTF-8, it may be {encoding}, try it?"
+msgstr "此文件格式不是 UTF-8，它可能是 {encoding}，以此编码打开？"
 
 #: C:\Users\Cai\Desktop\RNoTe\core\editor.py:121
 #: C:\Users\Cai\Desktop\RNoTe\core\main_menu.py:21
