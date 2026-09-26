@@ -78,6 +78,7 @@ class Editor(tk.Tk):
         text_bytes = file.read_bytes()
 
         try:
+            encoding = ''
             text = text_bytes.decode(encoding = 'utf-8')
         except UnicodeDecodeError:
             # Only need a small chunk.
@@ -110,6 +111,7 @@ class Editor(tk.Tk):
         text_tab.text_panel.edit_reset()
 
         text_tab.path = path
+        text_tab.encoding = encoding
 
         text_tab.text_panel.edit_modified(False)
 
@@ -123,7 +125,8 @@ class Editor(tk.Tk):
         if not self.custom_notebook.tabs():
             return
 
-        _, text_tab = self.custom_notebook.get_tab()
+        # Note: translation sign: _
+        __, text_tab = self.custom_notebook.get_tab()
 
         if file_path:
             file = Path(file_path)
@@ -135,7 +138,18 @@ class Editor(tk.Tk):
             return 'NotSaved' if not text_tab.path else None
 
         text = text_tab.text_panel.get('1.0', 'end-1c')  # No self adding "new line".
-        file.write_text(text, encoding = 'utf-8')
+
+        reply = False
+        if text_tab.encoding:
+            reply = messagebox.askyesno(
+                title = get_settings('win_title'),
+                message = _('The file is read in {encoding}, not UTF-8,'
+                            'sure save in it? "No" to use UTF-8').format(encoding = text_tab.encoding)
+            )
+        if not reply:
+            text_tab.encoding = ''
+
+        file.write_text(text, encoding = 'utf-8' if not reply else text_tab.encoding)
 
         text_tab.text_panel.edit_modified(False)
 
