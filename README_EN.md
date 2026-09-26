@@ -14,6 +14,11 @@ and it's proper to edit text and take notes.
 
 ## Usage
 
+Depand on (requirments.txt):
+```
+pip install chardet
+```
+
 &emsp;&emsp; Download the static version from Realeases  
 or package by yourself (Pyinstaller as example):
 
@@ -29,4 +34,4 @@ pyinstaller main.spec
 
 &emsp;&emsp;welcome to contribute this project,
 
-> Bilibili：[SkyElysium](https://space.bilibili.com/1994381139?spm_id_from=333.1007.0.0)
+> Bilibili：[SkyElysium](https://space.bilibili.com/1994381139?spm_id_from=333.1007.0.0) | E-mail: skyelysium@outlook.com
