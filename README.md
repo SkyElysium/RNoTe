@@ -14,6 +14,11 @@
 
 ## 使用
 
+此项目存在如下依赖（requirements.txt）：
+```
+pip install chardet
+```
+
 &emsp;&emsp;在项目的 Realeases 中下载稳定软件版本，  
 自打包按以下步骤（Pyinstaller为例）：
 
@@ -29,4 +34,4 @@ pyinstaller main.spec
 
 &emsp;&emsp;欢迎为此项目做出贡献，
 
-> Bilibili：[SkyElysium](https://space.bilibili.com/1994381139?spm_id_from=333.1007.0.0)
+> Bilibili：[SkyElysium](https://space.bilibili.com/1994381139?spm_id_from=333.1007.0.0) | E-mail: skyelysium@outlook.com
