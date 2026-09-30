@@ -22,7 +22,7 @@ RES_RELATIVE_PATHS = {
     'file_history': 'data/config/recent_files.txt',
 
     'lang'    : 'lang',
-    'langconf': 'data/config/config.ini'
+    'config'  : 'data/config/config.ini'
 }
 
 def get_path(name):
@@ -36,7 +36,7 @@ def get_path(name):
 # Languages
 parser = configparser.ConfigParser()
 
-parser.read(get_path('langconf'))
+parser.read(get_path('config'))
 lang = parser.get('lang', 'lang')
 
 # en: default

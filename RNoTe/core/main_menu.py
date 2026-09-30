@@ -18,7 +18,7 @@ class MainMenu(tk.Menu):
         self.is_tab_on = master.custom_notebook.is_tab_on
 
         self.parser = configparser.ConfigParser()
-        self.parser.read(get_path('langconf'))
+        self.parser.read(get_path('config'))
 
         self['postcommand'] = self._change_status_of_options
 
@@ -318,7 +318,7 @@ class MainMenu(tk.Menu):
 
         self.parser.set('lang', 'lang', code)
 
-        with open(get_path('langconf'), 'w', encoding = 'utf-8') as c:
+        with open(get_path('config'), 'w', encoding = 'utf-8') as c:
             self.parser.write(c)
 
     def zoom_in_font(self, event = None):
