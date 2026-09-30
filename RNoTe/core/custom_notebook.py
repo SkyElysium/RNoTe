@@ -83,10 +83,15 @@ class CustomNotebook(ttk.Notebook):
 
         _, text_tab = self.get_tab()
 
+        title = get_settings('win_title')
+
         if text_tab.path:
-            self.editor.title(f'{get_settings("win_title")} - {text_tab.path}')
+
+            self.editor.title(f'{title} - {text_tab.path}')
+            if text_tab.encoding:
+                self.editor.title(f'{title} - {text_tab.path} <{text_tab.encoding}>')
         else:
-            self.editor.title(get_settings('win_title'))
+            self.editor.title(title)
 
     def safely_close_file(self, event = None, tab_id = None):
 
@@ -156,6 +161,7 @@ class TextTab(tk.Frame):
         # Tab Info
         self.path = ''
         self.label = ''
+        self.encoding = ''
 
         self.font_trace_id = self.font_size.trace('w', self._change_font_size)
 
