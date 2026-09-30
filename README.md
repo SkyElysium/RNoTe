@@ -1,7 +1,7 @@
 # RNoTe
 
 ![Static Badge](https://img.shields.io/badge/Python-3.8.9-blue?logo=python&logoColor=white)
-![Static Badge](https://img.shields.io/badge/Realeses-v0.1.1-coral?style=flat)
+![Static Badge](https://img.shields.io/badge/Realeses-v0.2.0-coral?style=flat)
 
 简体中文 | [English](README_EN.md)
 
@@ -34,4 +34,4 @@ pyinstaller main.spec
 
 &emsp;&emsp;欢迎为此项目做出贡献，
 
-> Bilibili：[SkyElysium](https://space.bilibili.com/1994381139?spm_id_from=333.1007.0.0) | E-mail: skyelysium@outlook.com
+> Bilibili：[SkyElysium](https://space.bilibili.com/1994381139?spm_id_from=333.1007.0.0) | E-mail：skyelysium@outlook.com
