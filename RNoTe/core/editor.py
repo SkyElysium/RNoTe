@@ -75,14 +75,16 @@ class Editor(tk.Tk):
             )
             return
 
-        text_bytes = file.read_bytes()
-
         try:
             encoding = ''
-            text = text_bytes.decode(encoding = 'utf-8')
+            text = file.read_text(encoding = 'utf-8')
         except UnicodeDecodeError:
+            # Note: read_bytes will lead to mixed newlines,
+            # it can be only used to detect the encoding.
+            text_bytes = file.read_bytes()
             # Only need a small chunk.
             encoding = chardet.detect(text_bytes[0:1024])['encoding']
+
             if encoding is None:
                 messagebox.showerror(
                     title = get_settings('win_title'),
@@ -98,7 +100,7 @@ class Editor(tk.Tk):
                 return
 
             try:
-                text = text_bytes.decode(encoding = encoding)
+                text = file.read_text(encoding = encoding)
             except UnicodeDecodeError:
                 messagebox.showerror(
                     title = get_settings('win_title'),
