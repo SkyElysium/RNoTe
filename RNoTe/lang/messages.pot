@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2026-09-25 17:28+0800\n"
+"POT-Creation-Date: 2026-10-25 00:41+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,50 +15,66 @@ msgstr ""
 "Generated-By: pygettext.py 1.5\n"
 
 
-#: core\custom_notebook.py:101
+#: core\custom_notebook.py:106
 msgid "Save the file before closing?"
 msgstr ""
 
-#: core\custom_notebook.py:113
+#: core\custom_notebook.py:118
 msgid "Untitled"
 msgstr ""
 
-#: core\custom_notebook.py:250 core\main_menu.py:27 core\main_menu.py:118
+#: core\custom_notebook.py:256 core\main_menu.py:27 core\main_menu.py:119
 msgid "Copy"
 msgstr ""
 
-#: core\custom_notebook.py:251 core\main_menu.py:27 core\main_menu.py:123
+#: core\custom_notebook.py:257 core\main_menu.py:27 core\main_menu.py:124
 msgid "Cut"
 msgstr ""
 
-#: core\custom_notebook.py:252 core\custom_notebook.py:276
-#: core\custom_notebook.py:278 core\main_menu.py:27 core\main_menu.py:128
-#: core\main_menu.py:221 core\main_menu.py:223
+#: core\custom_notebook.py:258 core\custom_notebook.py:282
+#: core\custom_notebook.py:284 core\main_menu.py:27 core\main_menu.py:129
+#: core\main_menu.py:226 core\main_menu.py:228
 msgid "Paste"
 msgstr ""
 
-#: core\custom_notebook.py:254 core\custom_notebook.py:270
-#: core\custom_notebook.py:272
+#: core\custom_notebook.py:260 core\custom_notebook.py:276
+#: core\custom_notebook.py:278
 msgid "Copy Present Path"
 msgstr ""
 
-#: core\dialogs.py:39 core\main_menu.py:27 core\main_menu.py:140
+#: core\dialogs.py:39 core\main_menu.py:28 core\main_menu.py:141
 msgid "Find"
 msgstr ""
 
-#: core\dialogs.py:243 core\main_menu.py:200 core\main_menu.py:208
+#: core\dialogs.py:236 core\main_menu.py:28 core\main_menu.py:146
+msgid "Analyze"
+msgstr ""
+
+#: core\dialogs.py:258
+msgid "Analysis Result"
+msgstr ""
+
+#: core\dialogs.py:261
+msgid "Used Encoding: {encoding}"
+msgstr ""
+
+#: core\dialogs.py:262
+msgid "Chars: {length}"
+msgstr ""
+
+#: core\dialogs.py:278 core\main_menu.py:205 core\main_menu.py:213
 msgid "About"
 msgstr ""
 
-#: core\editor.py:56 core\main_menu.py:45
+#: core\editor.py:56 core\main_menu.py:46
 msgid "Open"
 msgstr ""
 
-#: core\editor.py:57 core\editor.py:150
+#: core\editor.py:57 core\editor.py:166
 msgid "All Types"
 msgstr ""
 
-#: core\editor.py:57 core\editor.py:150
+#: core\editor.py:57 core\editor.py:166
 msgid "Text File"
 msgstr ""
 
@@ -66,96 +82,100 @@ msgstr ""
 msgid "The file path you open is not exist"
 msgstr ""
 
-#: core\editor.py:88 core\editor.py:104
+#: core\editor.py:91 core\editor.py:107
 msgid "Cannot open this file, it may be a program"
 msgstr ""
 
-#: core\editor.py:93
+#: core\editor.py:96
 msgid "The file format is not UTF-8, it may be {encoding}, try it?"
 msgstr ""
 
-#: core\editor.py:148 core\main_menu.py:26 core\main_menu.py:55
+#: core\editor.py:148
+msgid "The file is read in {encoding}, not UTF-8,sure save in it? \"No\" to use UTF-8"
+msgstr ""
+
+#: core\editor.py:164 core\main_menu.py:26 core\main_menu.py:56
 msgid "Save As..."
 msgstr ""
 
-#: core\editor.py:185
+#: core\editor.py:201
 msgid "Save all of the unsaved files by hand?"
 msgstr ""
 
-#: core\main_menu.py:26 core\main_menu.py:50
+#: core\main_menu.py:26 core\main_menu.py:51
 msgid "Save"
 msgstr ""
 
-#: core\main_menu.py:26 core\main_menu.py:82
+#: core\main_menu.py:26 core\main_menu.py:83
 msgid "Tabs"
 msgstr ""
 
-#: core\main_menu.py:26 core\main_menu.py:85
+#: core\main_menu.py:26 core\main_menu.py:86
 msgid "Close"
 msgstr ""
 
-#: core\main_menu.py:27 core\main_menu.py:107
+#: core\main_menu.py:27 core\main_menu.py:108
 msgid "Undo"
 msgstr ""
 
-#: core\main_menu.py:27 core\main_menu.py:112
+#: core\main_menu.py:27 core\main_menu.py:113
 msgid "Redo"
 msgstr ""
 
-#: core\main_menu.py:27 core\main_menu.py:134
+#: core\main_menu.py:28 core\main_menu.py:135
 msgid "Select All"
 msgstr ""
 
-#: core\main_menu.py:28 core\main_menu.py:163
+#: core\main_menu.py:29 core\main_menu.py:168
 msgid "Zoom In"
 msgstr ""
 
-#: core\main_menu.py:28 core\main_menu.py:168
+#: core\main_menu.py:29 core\main_menu.py:173
 msgid "Zoom Out"
 msgstr ""
 
-#: core\main_menu.py:28 core\main_menu.py:173 core\main_menu.py:226
+#: core\main_menu.py:29 core\main_menu.py:178 core\main_menu.py:231
 msgid "Original Size"
 msgstr ""
 
-#: core\main_menu.py:39
+#: core\main_menu.py:40
 msgid "New"
 msgstr ""
 
-#: core\main_menu.py:69 core\main_menu.py:237 core\main_menu.py:240
-#: core\main_menu.py:242
+#: core\main_menu.py:70 core\main_menu.py:242 core\main_menu.py:245
+#: core\main_menu.py:247
 msgid "Open Recently"
 msgstr ""
 
-#: core\main_menu.py:91
+#: core\main_menu.py:92
 msgid "Exit"
 msgstr ""
 
-#: core\main_menu.py:96
+#: core\main_menu.py:97
 msgid "File"
 msgstr ""
 
-#: core\main_menu.py:146
+#: core\main_menu.py:151
 msgid "Tab Indent"
 msgstr ""
 
-#: core\main_menu.py:152
+#: core\main_menu.py:157
 msgid "Edit"
 msgstr ""
 
-#: core\main_menu.py:187
+#: core\main_menu.py:192
 msgid "Languages"
 msgstr ""
 
-#: core\main_menu.py:189
+#: core\main_menu.py:194
 msgid "View"
 msgstr ""
 
-#: core\main_menu.py:204
+#: core\main_menu.py:209
 msgid "Feedback"
 msgstr ""
 
-#: core\main_menu.py:255
+#: core\main_menu.py:260
 msgid "Clean Records"
 msgstr ""
 

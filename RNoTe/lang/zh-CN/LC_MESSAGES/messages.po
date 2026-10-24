@@ -57,6 +57,22 @@ msgstr "复制当前文件路径"
 msgid "Find"
 msgstr "查找"
 
+#: core\dialogs.py:236 core\main_menu.py:28 core\main_menu.py:146
+msgid "Analyze"
+msgstr "分析"
+
+#: core\dialogs.py:258
+msgid "Analysis Result"
+msgstr "分析结果"
+
+#: core\dialogs.py:261
+msgid "Used Encoding: {encoding}"
+msgstr "使用编码：{encoding}"
+
+#: core\dialogs.py:262
+msgid "Chars: {length}"
+msgstr "字符数：{length}"
+
 #: C:\Users\Cai\Desktop\RNoTe\core\dialogs.py:243
 #: C:\Users\Cai\Desktop\RNoTe\core\main_menu.py:183
 #: C:\Users\Cai\Desktop\RNoTe\core\main_menu.py:191
