@@ -231,6 +231,41 @@ def show_find_dialog():
     FindDialog()
 
 
+class AnalyzeDialog(Dialog):
+
+    DIALOG_TITLE = _('Analyze')
+    DIALOG_SIZE = '260x100'
+
+    def __init__(self):
+
+        super().__init__()
+        self.editor = self.master
+
+        self.set_dialog(self.DIALOG_TITLE, self.DIALOG_SIZE)
+
+        self._interface()
+
+    def _interface(self):
+
+        # Note: translation sign: _
+        __, tab = self.editor.custom_notebook.get_tab()
+
+        encoding = 'UTF-8' if not tab.encoding else tab.encoding
+
+        text = tab.text_panel.get('1.0', 'end-1c')
+        length = len(text)
+
+        label_frame = ttk.Labelframe(self, text = _('Analysis Result'))
+        label_frame.pack(fill = 'both', expand = True, padx = 3, pady = 3)
+
+        tk.Label(label_frame, text = _('Used Encoding: {encoding}').format(encoding = encoding)).pack()
+        tk.Label(label_frame, text = _('Chars: {length}').format(length = length)).pack()
+
+def show_analyze_dialog():
+
+    AnalyzeDialog()
+
+
 REPO_URL = 'https://github.com/SkyElysium/RNoTe'
 COPYRIGHT = '''
 

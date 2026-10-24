@@ -6,7 +6,7 @@ import tkinter.ttk as ttk
 import webbrowser
 
 from .config import get_settings, get_path, _
-from .dialogs import show_about_dialog, show_find_dialog
+from .dialogs import show_about_dialog, show_find_dialog, show_analyze_dialog
 
 
 class MainMenu(tk.Menu):
@@ -24,7 +24,8 @@ class MainMenu(tk.Menu):
 
         # Options that need checking the status in "_change_status_of_options"
         self.file_option_checklist = [_('Close'), _('Save'), _('Save As...'), _('Tabs')]
-        self.edit_option_checklist = [_('Undo'), _('Redo'), _('Copy'), _('Cut'), _('Paste'), _('Select All'), _('Find')]
+        self.edit_option_checklist = [_('Undo'), _('Redo'), _('Copy'), _('Cut'), _('Paste'),
+                                      _('Select All'), _('Find'), _('Analyze')]
         self.view_option_checklist = [_('Zoom In'), _('Zoom Out'), _('Original Size')]
 
         # File
@@ -140,6 +141,10 @@ class MainMenu(tk.Menu):
             label = _('Find'),
             accelerator = 'Ctrl+F',
             command = self.popup_find_dialog
+        )
+        self.edit_option.add_command(
+            label = _('Analyze'),
+            command = show_analyze_dialog
         )
         self.edit_option.add_separator()
         self.edit_option.add_checkbutton(
