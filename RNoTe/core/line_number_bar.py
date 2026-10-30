@@ -12,7 +12,7 @@ class LineNumberBar(tk.Text):
 
         self.config(
             width = self.max_width,
-            bg = '#e8e8e8',
+            bg = 'white',
             fg = '#8f8f8f',
             state = 'disabled',
             cursor = 'arrow',
